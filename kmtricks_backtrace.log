@@ -1,0 +1,18 @@
+
+Backtrace:
+1 0x00007ff699a3c460 (null) + 140697116329056
+2 0x00007ff699a9152b pthread_kill + 283
+3 0x00007ff699a3c3b6 gsignal + 22
+4 0x00007ff699a2287c abort + 215
+5 0x00007ff699ea4ee6 (null) + 140697120952038
+6 0x00007ff699eb6e9c (null) + 140697121025692
+7 0x00007ff699eb6f07 (null) + 140697121025799
+8 0x00007ff699eb7168 (null) + 140697121026408
+9 0x000056157d6d90c1 void km::check_fstream_good<std::basic_ifstream<char, std::char_traits<char> > >(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::basic_ifstream<char, std::char_traits<char> > const&) + 177
+10 0x000056157d7114d5 km::Fof::parse() + 101
+11 0x000056157d712a4f km::Fof::Fof(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 175
+12 0x000056157d671d43 (null) + 94650298211651
+13 0x000056157d664d3c main + 812
+14 0x00007ff699a23a90 (null) + 140697116228240
+15 0x00007ff699a23b49 __libc_start_main + 137
+16 0x000056157d668215 _start + 37
