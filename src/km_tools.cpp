@@ -12,6 +12,7 @@ int main_merge(int argc, char *argv[]);
 int main_reverse(int argc, char *argv[]);
 int main_select(int argc, char *argv[]);
 int main_unitig(int argc, char *argv[]);
+int main_convert(int argc, char *argv[]);
 
 static int usage()
 {
@@ -33,6 +34,7 @@ static int usage()
     fprintf(stderr, "  select   - select only a subset of k-mers\n");
     fprintf(stderr, "  unitig   - build a unitig matrix\n");
     fprintf(stderr, "  pipeline - run the pipeline to produce an abundance unitig matrix from a set of FASTA/FASTQ files\n");
+    fprintf(stderr, "  convert  - convert ggcat jsonl color output into a csv unitig matrix\n");
     fprintf(stderr, "  version  - print version\n");
     fprintf(stderr, "\n");
     return 0;
@@ -52,6 +54,7 @@ int main(int argc, char *argv[])
     else if (strcmp(argv[1], "reverse") == 0) { return main_reverse(argc-1, argv+1); }
     else if (strcmp(argv[1], "select") == 0) { return main_select(argc-1, argv+1); }
     else if (strcmp(argv[1], "unitig") == 0) { return main_unitig(argc-1, argv+1); }
+    else if (strcmp(argv[1], "convert") == 0) { return main_convert(argc-1, argv+1); }
     else if (strcmp(argv[1], "pipeline") == 0) {
         if (argc < 3) {
             // Execute the script with -h option and display its output to stderr

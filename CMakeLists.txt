@@ -79,6 +79,7 @@ set(MUSET_SOURCES
   src/km_select.cpp
   src/km_tools.cpp
   src/km_unitig.cpp
+  src/km_format_converter.cpp
 )
 
 add_executable(muset ${MUSET_SOURCES})
