@@ -15,12 +15,16 @@ int main_convert(int argc, char* argv[]) {
   bool ap_flag = false;
   std::string out_fname;
   bool help_opt = false;
+  double min = 0.8;
 
   int c;
-  while ((c = getopt(argc, argv, "o:hap")) != -1) {
+  while ((c = getopt(argc, argv, "o:m:hp")) != -1) {
     switch (c) {
-      case 'ap':
+      case 'p':
         ap_flag = true;
+        break;
+      case 'm':
+        min = std::atof(optarg);
         break;
       case 'o':
         out_fname = optarg;
@@ -39,8 +43,9 @@ int main_convert(int argc, char* argv[]) {
     std::cout << "Usage: kmat_tools convert [options] <color_names_dump.jsonl> <query_output.jsonl>\n\n";
     std::cout << "Converts the jsonl output of ggcat into an unitig matrix in csv format.\n\n";
     std::cout << "Options:\n";
-    std::cout << "  -ap      if you want the matrix to be absence/presence (i.e. 0/1) and not\n";
+    std::cout << "  -p      if you want the matrix to be absence/presence (i.e. 0/1) and not\n";
     std::cout << "           with k-mer presence ratios.\n";
+    std::cout << "  -m float minimum value to set the presence to 1 [0.8]\n";
     std::cout << "  -o FILE  write unitig matrix to FILE [stdout]\n";
     std::cout << "  -h       print this help message\n";
     return 0;
@@ -60,8 +65,6 @@ int main_convert(int argc, char* argv[]) {
         return 1;
     }
 
-    
-    
     std::vector<std::string> color_names;  // Vector to store the values of "x"
     std::string line;
     color_names.push_back("Unitigs_id");
@@ -110,7 +113,7 @@ int main_convert(int argc, char* argv[]) {
         fpout = &ofs;
     }
 
-   *fpout << std::fixed << std::setprecision(2);
+   //*fpout << std::fixed << std::setprecision(2);
 
     for (uint64_t i = 0; i < color_names.size()-1; i++) {
         *fpout << color_names[i] << ",";
@@ -118,6 +121,7 @@ int main_convert(int argc, char* argv[]) {
 
     *fpout << color_names[static_cast<int>(color_names.size()) - 1] << std::endl;
     int line_counter {0};
+    float curr_value;
     std::ifstream colorQueryFile(color_query_Filename);
     while (std::getline(colorQueryFile, line)) {
         try {
@@ -133,11 +137,17 @@ int main_convert(int argc, char* argv[]) {
                     auto value = it.value();
                     if (!key.empty() && value.is_number()) {  // Check if key is not empty and value is a number
                         uint64_t index = std::stoi(key);  // Convert key to integer index
+                        curr_value = value.get<float>();
                         if (index < presence_values.size()) {
                             if (ap_flag) {
-                                presence_values[index] = 1;
+                                if (curr_value > min){
+                                    presence_values[index] = 1;
+                                }
+                                else {
+                                    presence_values[index] = 0;
+                                }
                             } else {
-                                presence_values[index] = value.get<float>();
+                                presence_values[index] = curr_value;
                             }
                         }
                     }
