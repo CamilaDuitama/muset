@@ -44,7 +44,7 @@ kmtricks aggregate --matrix kmer --format text --cpr-in --sorted --output small_
 After aggregating the results with kmtricks, you can use the following command to run `muset`:
 
 ```
-muset -t 20 -u 50 -i small_exp/sorted_matrix.txt
+muset -t 20 -l 50 -i small_exp/sorted_matrix.txt
 ```
 
 ## Running on Large Dataset
