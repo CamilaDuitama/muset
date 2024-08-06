@@ -32,7 +32,7 @@ jobs:
         with:
           meta_yaml_dir: conda/muset
           python-version: ${{ matrix.python-version }}
-          user: rvicedomini
+          user: CamilaDuitama
           label: main
           token: ${{ secrets.ANACONDA_TOKEN }} # Replace with the right name of your secret
 
