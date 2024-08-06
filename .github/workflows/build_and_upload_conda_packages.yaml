@@ -1,0 +1,38 @@
+name: Build and upload conda packages
+
+on:
+  release:
+    types: ['released']
+  workflow_dispatch: # to allow triggering the action manually
+
+jobs:
+  conda_deployment_with_new_tag:
+    name: Conda deployment of package for platform ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ["ubuntu-latest"]
+        python-version: ["3.10"]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      - name: Conda environment creation and activation
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: anaconda-client-env
+          environment-file: conda/build_env.yaml    # Path to the build conda environment
+          python-version: ${{ matrix.python-version }}
+          auto-update-conda: false
+          auto-activate-base: false
+          show-channel-urls: true
+      - name: Build and upload the conda packages
+        uses: uibcdf/action-build-and-upload-conda-packages@v1.3.0
+        with:
+          meta_yaml_dir: conda/muset
+          python-version: ${{ matrix.python-version }}
+          user: rvicedomini
+          label: main
+          token: ${{ secrets.ANACONDA_TOKEN }} # Replace with the right name of your secret
+

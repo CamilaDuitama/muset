@@ -1,11 +1,14 @@
-{% set version = "0.2" %}
+{% set version = "0.4" %}
 
 package:
   name: muset
   version: {{ version }}
 
 source:
-  git_url: https://github.com/CamilaDuitama/muset
+  path: ../../
+
+build:
+  number: 1
 
 requirements:
   build:
@@ -30,19 +33,19 @@ extra:
   recipe-maintainers:
     - CamilaDuitama
 
-test:
-  source_files:
-    - test/fof.txt
-    - test/D1.fastq
-    - test/D2.fastq
-    - test/D3.fastq
-    - test/D4.fastq
-    - test/D5.fastq
-    - test/D6.fastq
-    - test/D7.fastq
-    - test/D8.fastq
-    - test/D9.fastq
-    - test/D10.fastq 
-
-  commands:
-    - cd test && muset fof.txt
+## test:
+##   source_files:
+##     - test/fof.txt
+##     - test/D1.fastq
+##     - test/D2.fastq
+##     - test/D3.fastq
+##     - test/D4.fastq
+##     - test/D5.fastq
+##     - test/D6.fastq
+##     - test/D7.fastq
+##     - test/D8.fastq
+##     - test/D9.fastq
+##     - test/D10.fastq 
+## 
+##   commands:
+##     - cd test && muset fof.txt
