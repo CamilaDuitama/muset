@@ -5,7 +5,7 @@
 
 set -e
 
-MUSET_VERSION="0.2"
+MUSET_VERSION="0.4"
 
 SCRIPT_DIR=$(dirname $(readlink -f $0))
 # Ensure to use the kmat_tools executable within the same folder of this script
