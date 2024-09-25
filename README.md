@@ -95,12 +95,12 @@ sudo singularity build muset.sif Singularity.def
 
 To run `muset` and see the help message, use the following command:
 ```
-singularity exec /path/to/muset.sif muset -h'
+singularity exec /path/to/muset.sif muset -h
 ```
 
 To try `muset` with example data, `cd` to the `test` directory within the repository, then run:
 ```
-singularity exec /path/to/muset.sif muset fof.txt'
+singularity exec /path/to/muset.sif muset fof.txt
 ```
 
 ## Usage
