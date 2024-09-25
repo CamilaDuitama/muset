@@ -18,7 +18,7 @@ From: ubuntu:22.04
         cmake
 
     echo "Installing Rust"
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain=1.81.0
     . ${HOME}/.cargo/env
     # rustup toolchain install stable
     # rustup default stable
@@ -27,7 +27,7 @@ From: ubuntu:22.04
     cd /opt
     git clone https://github.com/algbio/ggcat --recursive
     cd ggcat
-    git checkout a91ecc9  # Checkout the specific commit
+    git checkout b5641ee  # Checkout the specific commit
     git submodule update --init --recursive
     cargo install --path crates/cmdline --locked --root /opt/ggcat/
     cargo clean
