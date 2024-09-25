@@ -7,7 +7,7 @@
 # GGCAT AND KMAT_TOOLS MUST BE INSTALLED AND IN YOUR PATH.
 set -e
 
-MUSET_VERSION="0.4"
+MUSET_VERSION="0.4.1"
 
 SCRIPT_DIR=$(dirname $(readlink -f $0))
 # Ensure to use the kmat_tools executable within the same folder of this script
