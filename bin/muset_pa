@@ -188,9 +188,9 @@ log_and_run ggcat dump-colors $output_file.colors.dat $output_file
 
 if [ "$ratio" -gt 0 ] 
 then
-log_and_run kmat_tools convert -p -m $ratio $output_file.fa $output_file.jsonl $output_file.query.jsonl -o $output_file.query.csv 
+log_and_run kmat_tools convert -p -l -m $ratio $output_file.fa $output_file.jsonl $output_file.query.jsonl -o $output_file.mat 
 else
-log_and_run kmat_tools convert $output_file.fa $output_file.jsonl $output_file.query.jsonl -o $output_file.query.csv
+log_and_run kmat_tools convert -l $output_file.fa $output_file.jsonl $output_file.query.jsonl -o $output_file.mat
 fi
 
 

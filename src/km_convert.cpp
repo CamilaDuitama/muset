@@ -19,10 +19,14 @@ int main_convert(int argc, char* argv[]) {
   double min {0.8};
   bool m_used {false};
   bool out_write_seq {false};
+  bool pipeline {false};
 
   int c;
-  while ((c = getopt(argc, argv, "o:m:sph")) != -1) {
+  while ((c = getopt(argc, argv, "o:m:splh")) != -1) {
     switch (c) {
+      case 'l':
+        pipeline = true;
+        break;
       case 'p':
         ap_flag = true;
         break;
@@ -55,6 +59,7 @@ int main_convert(int argc, char* argv[]) {
     std::cerr << "  -m float minimum value to set the presence to 1 (taking values >= of m) [0.8]\n";
     std::cerr << "  -s flag to indicate you want the unitig sequence and not the id in the matrix\n";
     std::cerr << "  -o FILE  write unitig matrix to FILE [stdout]\n";
+    std::cerr << "  -l  write unitig matrix without header and with whitespace separator instead of comma. (used for consistency in  muset).\n";
     std::cerr << "  -h       print this help message\n";
     return 0;
   }
@@ -126,12 +131,13 @@ int main_convert(int argc, char* argv[]) {
     }
 
    //*fpout << std::fixed << std::setprecision(2);
-
-    for (uint64_t i = 0; i < color_names.size()-1; i++) {
-        *fpout << color_names[i] << ",";
+   std::string separator {(pipeline) ? " " : ","};
+    if (!pipeline){
+        for (uint64_t i = 0; i < color_names.size()-1; i++) {
+            *fpout << color_names[i] << separator;
+        }
+        *fpout << color_names[static_cast<int>(color_names.size()) - 1] << std::endl;
     }
-
-    *fpout << color_names[static_cast<int>(color_names.size()) - 1] << std::endl;
     int line_counter {0};
     float curr_value;
     std::ifstream colorQueryFile(color_query_Filename);
@@ -173,9 +179,9 @@ int main_convert(int argc, char* argv[]) {
             }
             utg_ssi >> unitig;
             // std::cerr << unitig.seq << " " << unitig.name << std::endl;
-            *fpout << (out_write_seq ? unitig.seq : unitig.name) << ",";
+            *fpout << (out_write_seq ? unitig.seq : unitig.name) << separator;
             for (uint64_t i = 0; i < presence_values.size()-1; i++) {
-                *fpout << presence_values[i] << ",";
+                *fpout << presence_values[i] << separator;
                 }
             *fpout << presence_values[presence_values.size() - 1] << std::endl;
             
