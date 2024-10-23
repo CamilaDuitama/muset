@@ -18,6 +18,7 @@
  *****************************************************************************/
 
 #pragma once
+#include <memory>
 #include <indicators/multi_progress.hpp>
 #include <indicators/dynamic_progress.hpp>
 #include <indicators/progress_bar.hpp>
@@ -26,10 +27,10 @@ using namespace indicators;
 
 namespace km {
 
-inline ProgressBar* get_progress_bar(const std::string& name, size_t size,
+inline std::unique_ptr<ProgressBar> get_progress_bar(const std::string& name, size_t size,
                                      size_t width, Color color, bool time)
 {
-  return new ProgressBar{option::BarWidth{width},
+  return std::make_unique<ProgressBar>(option::BarWidth{width},
                      option::Start{"["},
                      option::Fill{"="},
                      option::Lead{">"},
@@ -41,7 +42,7 @@ inline ProgressBar* get_progress_bar(const std::string& name, size_t size,
                      option::PrefixText{name},
                      option::FontStyles{std::vector<FontStyle>{FontStyle::bold}},
                      option::MaxProgress{size}
-  };
+  );
 }
 
 };

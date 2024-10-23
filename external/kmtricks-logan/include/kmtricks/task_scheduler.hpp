@@ -49,8 +49,6 @@ public:
 
   ~TaskScheduler()
   {
-    for (auto& p : m_progress) delete p;
-
     if (m_opt->hist)
     {
       for (auto& h : m_hists)
@@ -158,7 +156,7 @@ public:
   {
     if (m_is_info)
     {
-      m_dyn.push_back(*m_progress[2]); m_dyn[0].set_progress(0);
+      m_dyn.push_back(std::move(m_progress[2])); m_dyn[0].set_progress(0);
     }
 
     TaskPool pool(m_opt->nb_threads);
@@ -179,7 +177,7 @@ public:
 
   void exec_count()
   {
-    if (m_is_info) { m_dyn.push_back(*m_progress[3]); m_dyn[1].set_progress(0); }
+    if (m_is_info) { m_dyn.push_back(std::move(m_progress[3])); m_dyn[1].set_progress(0); }
 
     TaskPool pool(m_opt->nb_threads);
 
@@ -258,8 +256,8 @@ public:
   {
     if (m_is_info)
     {
-      m_dyn.push_back(*m_progress[2]); m_dyn[0].set_progress(0);
-      m_dyn.push_back(*m_progress[3]); m_dyn[1].set_progress(0);
+      m_dyn.push_back(std::move(m_progress[2])); m_dyn[0].set_progress(0);
+      m_dyn.push_back(std::move(m_progress[3])); m_dyn[1].set_progress(0);
     }
     TaskPool pool(m_opt->nb_threads);
 
@@ -402,8 +400,8 @@ public:
   void exec_logan_count() 
   {
     if (m_is_info) {
-      m_dyn.push_back(*m_progress[2]); m_dyn[0].set_progress(0);
-      m_dyn.push_back(*m_progress[3]); m_dyn[1].set_progress(0);
+      m_dyn.push_back(std::move(m_progress[2])); m_dyn[0].set_progress(0);
+      m_dyn.push_back(std::move(m_progress[3])); m_dyn[1].set_progress(0);
     }
 
     TaskPool pool(m_opt->nb_threads);
@@ -475,7 +473,7 @@ public:
   {
     if (m_is_info)
     {
-      m_dyn.push_back(*m_progress[4]); m_dyn[2].set_progress(0);
+      m_dyn.push_back(std::move(m_progress[4])); m_dyn[2].set_progress(0);
     }
 
     if (m_opt->m_ab_float)
@@ -514,7 +512,7 @@ public:
     TaskPool pool(m_opt->nb_threads);
     if (m_is_info)
     {
-      m_dyn.push_back(*m_progress[5]);
+      m_dyn.push_back(std::move(m_progress[5]));
       if (m_opt->skip_merge) m_dyn[2].set_progress(0);
       else m_dyn[3].set_progress(0);
     }
@@ -634,7 +632,7 @@ public:
   HashWindow m_hw;
   bool m_is_info {false};
 
-  std::vector<ProgressBar*> m_progress;
+  std::vector<std::unique_ptr<ProgressBar>> m_progress;
   DynamicProgress<ProgressBar> m_dyn;
 };
 
