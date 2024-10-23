@@ -40,14 +40,14 @@ From: ubuntu:22.04
     conda init
 
     echo "Setting up the Conda environment for MUSET..."
-    conda create -c bioconda -c conda-forge -n muset camiladuitama::muset 
+    conda create -n muset_env camiladuitama::muset 
     . /opt/miniconda/etc/profile.d/conda.sh
-    conda activate muset
+    conda activate muset_env
 
 %environment
     export PATH=/opt/miniconda/bin:/opt/ggcat/bin:$PATH
     . /opt/miniconda/etc/profile.d/conda.sh
-    conda activate muset
+    conda activate muset_env
 
 %runscript
     exec "$@"

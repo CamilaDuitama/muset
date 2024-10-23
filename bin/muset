@@ -273,7 +273,7 @@ if [ "${skip_matrix_construction}" != true ]; then # Build matrix + Filter
 
     # Build k-mer matrix with kmtricks
     log "Building k-mer matrix"
-    log_and_run kmtricks pipeline --file $input_file --kmer-size $k_len --hard-min ${min_kmer_abundance} --mode kmer:count:bin --cpr --run-dir "${output_dir}" -t $thr --recurrence-min $rec_min
+    log_and_run muset-kmtricks pipeline --file $input_file --kmer-size $k_len --hard-min ${min_kmer_abundance} --mode kmer:count:bin --cpr --run-dir "${output_dir}" -t $thr --recurrence-min $rec_min
 
     # Filter kmtricks matrix in parallel
     log "Filtering k-mer matrix"

@@ -39,7 +39,7 @@ static int usage()
     fprintf(stderr, "  version  - print version\n");
     fprintf(stderr, "\n");
     return 0;
-}
+}   
 
 int main(int argc, char *argv[])
 {

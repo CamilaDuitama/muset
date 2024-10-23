@@ -6,7 +6,7 @@
 #define KMTRICKS_PUBLIC
 #include <kmtricks/kmer.hpp>
 // #include <kmtricks/minimizer.hpp>
-// #include <kmtricks/repartition.hpp>
+#include <kmtricks/repartition.hpp>
 // #include <kmtricks/histogram.hpp>
 // #include <kmtricks/bitmatrix.hpp>
 // #include <kmtricks/hash.hpp>

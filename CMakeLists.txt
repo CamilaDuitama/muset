@@ -79,7 +79,7 @@ set(deps_libs "")
 set(deps "")
 
 # kmtricks
-list(APPEND includes ${external_dir}/kmtricks/include)
+include(${cmake_path}/kmtricks.cmake)
 
 # fmt
 include(${cmake_path}/fmt.cmake)
@@ -128,3 +128,16 @@ add_executable(kmat_tools ${kmat_tools_sources})
 target_include_directories(kmat_tools PRIVATE ${includes})
 target_link_libraries(kmat_tools ${deps_libs})
 add_dependencies(kmat_tools ${deps})
+
+# ############################################################
+# # muset_unitigs executable
+
+# set(muset_ucount_sources
+#   src/muset_ucount.cpp
+# )
+
+# add_executable(muset_ucount ${muset_ucount_sources})
+
+# target_include_directories(muset_ucount PRIVATE ${includes})
+# target_link_libraries(muset_ucount ${deps_libs})
+# add_dependencies(muset_ucount ${deps})

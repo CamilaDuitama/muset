@@ -5,5 +5,4 @@ channels:
   - camiladuitama
   - defaults
 dependencies:
-  - kmtricks
   - muset

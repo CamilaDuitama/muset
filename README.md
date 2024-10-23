@@ -29,16 +29,14 @@ for generating a presence-absence unitig matrix.
 Requirements:
   - [GGCAT](https://github.com/algbio/ggcat?tab=readme-ov-file#installation)
 
-Then you can install `muset` by creating conda environment:
+Then you can install `muset` by creating conda environment (e.g., `muset_env`):
 ```
-git clone --recursive https://github.com/camiladuitama/muset.git
-cd muset
-conda env create -n muset --file environment.yaml
+conda env create -n muset_env -c camiladuitama muset
 ```
 
-To run `muset` remember to activate the conda environment with:
+To run `muset` remember to activate the corresponding conda environment with:
 ```
-conda activate muset
+conda activate muset_env
 ```
 
 You can check if `muset` is correctly installed as follows:
@@ -53,7 +51,6 @@ Requirements:
   - a recent version of GCC (or clang) that supports the C++17 standard
   - cmake >= 3.15
   - [GGCAT](https://github.com/algbio/ggcat?tab=readme-ov-file#installation)
-  - [kmtricks](https://github.com/tlemane/kmtricks/wiki/Installation) >= 1.4.0
 
 To clone the repository:
 ```
