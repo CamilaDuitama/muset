@@ -129,15 +129,16 @@ target_include_directories(kmat_tools PRIVATE ${includes})
 target_link_libraries(kmat_tools ${deps_libs})
 add_dependencies(kmat_tools ${deps})
 
-# ############################################################
-# # muset_unitigs executable
+############################################################
+# muset cpp executable
 
-# set(muset_ucount_sources
-#   src/muset_ucount.cpp
-# )
+set(muset_sources
+  src/muset.cpp
+  src/cli.cpp
+)
 
-# add_executable(muset_ucount ${muset_ucount_sources})
+add_executable(muset-cpp ${muset_sources})
 
-# target_include_directories(muset_ucount PRIVATE ${includes})
-# target_link_libraries(muset_ucount ${deps_libs})
-# add_dependencies(muset_ucount ${deps})
+target_include_directories(muset-cpp PRIVATE ${includes})
+target_link_libraries(muset-cpp ${deps_libs})
+add_dependencies(muset-cpp ${deps})

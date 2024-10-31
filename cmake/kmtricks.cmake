@@ -17,3 +17,7 @@ ExternalProject_Add(KMTRICKS
 
 list(APPEND includes ${external_dir}/kmtricks-logan/include)
 list(APPEND deps KMTRICKS)
+
+list(APPEND includes ${external_dir}/kmtricks-logan/thirdparty/bcli/include)
+list(APPEND includes ${external_dir}/kmtricks-logan/thirdparty/spdlog/include)
+list(APPEND deps_libs ${external_bindir}/KMTRICKS/src/KMTRICKS-build/thirdparty/SPDLOG/src/SPDLOG-build/libspdlog.a)
