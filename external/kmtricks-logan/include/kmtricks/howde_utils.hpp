@@ -17,7 +17,7 @@
  *****************************************************************************/
 
 #pragma once
-#include <sdsl/bit_vectors.hpp>
+//#include <sdsl/bit_vectors.hpp>
 #include <bloom_filter_file.h>
 #include <kmtricks/kmdir.hpp>
 #include <kmtricks/io/vector_file.hpp>
