@@ -17,21 +17,6 @@ From: ubuntu:22.04
         zlib1g-dev \
         cmake
 
-    echo "Installing Rust"
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain=1.81.0
-    . ${HOME}/.cargo/env
-    # rustup toolchain install stable
-    # rustup default stable
-
-    echo "Installing GGCAT from github (commit a91ecc9)..."
-    cd /opt
-    git clone https://github.com/algbio/ggcat --recursive
-    cd ggcat
-    git checkout b5641ee  # Checkout the specific commit
-    git submodule update --init --recursive
-    cargo install --path crates/cmdline --locked --root /opt/ggcat/
-    cargo clean
-
     echo "Installing Miniconda..."
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh
     bash /tmp/miniconda.sh -b -p /opt/miniconda
@@ -40,12 +25,11 @@ From: ubuntu:22.04
     conda init
 
     echo "Setting up the Conda environment for MUSET..."
-    conda create -n muset_env camiladuitama::muset 
+    conda create -n muset_env -c conda-forge bioconda::ggcat camiladuitama::muset 
     . /opt/miniconda/etc/profile.d/conda.sh
     conda activate muset_env
 
 %environment
-    export PATH=/opt/miniconda/bin:/opt/ggcat/bin:$PATH
     . /opt/miniconda/etc/profile.d/conda.sh
     conda activate muset_env
 
