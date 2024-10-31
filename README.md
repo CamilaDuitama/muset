@@ -26,12 +26,9 @@ for generating a presence-absence unitig matrix.
 
 ### Conda installation
 
-Requirements:
-  - [GGCAT](https://github.com/algbio/ggcat?tab=readme-ov-file#installation)
-
 Then you can install `muset` by creating conda environment (e.g., `muset_env`):
 ```
-conda env create -n muset_env -c camiladuitama muset
+conda create -n muset_env -c conda-forge bioconda::ggcat camiladuitama::muset
 ```
 
 To run `muset` remember to activate the corresponding conda environment with:
