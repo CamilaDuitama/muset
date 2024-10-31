@@ -100,7 +100,7 @@ singularity exec /path/to/muset.sif muset fof.txt
 ## Usage
 
 ````
-muset v0.4
+muset v0.4.1
 
 DESCRIPTION:
    muset - a pipeline for building an abundance unitig matrix from a list of FASTA/FASTQ files.
@@ -121,6 +121,7 @@ OPTIONS:
    -F FLOAT   fraction of samples in which a k-mer should be present (default: 0.1, mutually exclusive with -N)
    -t INT     number of cores (default: 4)
    -s         write the unitig sequence in the first column of the output matrix instead of the identifier
+   -u         input is a list of unitigs from Logan (i.e., with abundance information)
    -h         show this help message and exit
    -V         show version number and exit
 
@@ -203,7 +204,7 @@ where $N$ is the number of k-mers in $u$, and $x_i$ is a binary variable that is
 MUSET includes a `kmat_tools`, an auxiliary executable allowing to perform some basic operations on a (text) k-mer matrix.
 
 ```
-kmat_tools v0.4
+kmat_tools v0.4.1
 
 DESCRIPTION
   kmat_tools - a collection of tools to process text-based k-mer matrices
@@ -212,10 +213,11 @@ USAGE
   kmat_tools <command> <arguments>
 
 COMMANDS
+  convert  - convert ggcat jsonl color output into a csv unitig matrix
   diff     - difference between two sorted k-mer matrices
   fasta    - output a k-mer matrix in FASTA format
   fafmt    - filter a FASTA file by length and write sequences in single lines
-  filter   - filter a k-mer matrix by selecting k-mers that are potentially differential
+  filter   - filter a text k-mer matrix by selecting k-mers that are potentially differential
   merge    - merge two input sorted k-mer matrices
   reverse  - reverse complement k-mers in a matrix
   select   - select only a subset of k-mers
@@ -224,10 +226,10 @@ COMMANDS
 ```
 
 ### I just want a presence-absence unitig matrix
-MUSET includes also `muset_pa`, an auxiliary executable that generates a presence-absence unitig matrix in text format from a list of input samples using ggcat and kmat_tools.
+MUSET also includes `muset_pa`, an auxiliary executable for building a presence-absence unitig matrix in text format from a list of input samples using `ggcat` and `kmat_tools`.
 
 ```
-muset_pa v0.4
+muset_pa v0.4.1
 
 DESCRIPTION:
    muset_pa - a pipeline for building a presence-absence unitig matrix from a list of FASTA/FASTQ files.
