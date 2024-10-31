@@ -18,5 +18,6 @@ echo "Current directory: ${PWD}"
 ls -lh
 
 cp ./bin/kmat_tools ${PREFIX}/bin
+cp ./bin/muset-kmtricks ${PREFIX}/bin
 cp ./bin/muset ${PREFIX}/bin
 cp ./bin/muset_pa ${PREFIX}/bin
