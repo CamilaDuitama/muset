@@ -26,7 +26,7 @@ for generating a presence-absence unitig matrix.
 
 ### Conda installation
 
-Then you can install `muset` by creating conda environment (e.g., `muset_env`):
+The simplest way to install `muset` is by creating a conda environment (e.g., `muset_env`) as follows:
 ```
 conda create -n muset_env -c conda-forge bioconda::ggcat camiladuitama::muset
 ```
