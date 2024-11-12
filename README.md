@@ -4,8 +4,7 @@
 
 ## A pipeline for building an abundance unitig matrix.
 MUSET is a software for generating an abundance unitig matrix from a collection of input samples (in FASTA/Q format).
-It additionally provides a comprehensive suite of tools (called `kmat tools`) for manipulating k-mer matrices and a script  
-for generating a presence-absence unitig matrix.
+It additionally provides a comprehensive suite of tools (called `kmat tools`) for manipulating k-mer matrices and a script for generating a presence-absence unitig matrix.
 
 + [Installation](#installation)
   - [Conda installation](#conda-installation)
