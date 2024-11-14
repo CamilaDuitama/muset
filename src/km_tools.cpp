@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define KMAT_TOOLS_VERSION "v0.4.1"
+#define KMAT_TOOLS_VERSION "v0.4.2"
 
 int main_basic_filter(int argc, char *argv[]);
 int main_convert(int argc, char *argv[]);
