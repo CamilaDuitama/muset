@@ -1,0 +1,3 @@
+version	data	test	speed (s)	memory (kB)
+1.0	NZ_LN874954.1	high_level_api_kmer_read	0.28	3800
+1.0	NC_008801.1	high_level_api_kmer_read	37.16	3800

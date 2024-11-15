@@ -1,5 +1,12 @@
 cmake_minimum_required(VERSION 3.15)
-project(kmat_tools LANGUAGES C CXX)
+project(muset VERSION 0.5 LANGUAGES C CXX)
+
+############################################################
+## kmtricks compile-time parameters
+
+set(KMER_LIST "32,64")
+set(KMER_N 2)
+set(MAX_C 4294967295)
 
 ############################################################
 ## Required C++ standard
@@ -78,17 +85,53 @@ set(includes "")
 set(deps_libs "")
 set(deps "")
 
-# kmtricks
-include(${cmake_path}/kmtricks.cmake)
+list(APPEND includes ${CMAKE_SOURCE_DIR}/include
+  ${CMAKE_BINARY_DIR}/include)
+
+# bcli
+list(APPEND includes ${external_dir}/bcli/include)
+
+# bitpacker
+list(APPEND includes ${external_dir}/bitpacker/include)
+
+# cfrcat
+list(APPEND includes ${external_dir}/cfrcat/include)
 
 # fmt
 include(${cmake_path}/fmt.cmake)
 
+# gatb-core-stripped
+include(${cmake_path}/gatb-core-stripped.cmake)
+
+# indicators
+list(APPEND includes ${external_dir}/indicators/include)
+
+# kff-cpp-api
+include(${cmake_path}/kff-cpp-api.cmake)
+
+# kmtricks-logan
+# include(${cmake_path}/kmtricks.cmake)
+
 # lz4
 include(${cmake_path}/lz4.cmake)
 
+# robin-hood-hashing
+list(APPEND includes ${external_dir}/robin-hood-hashing/src/include)
+
+# span-lite
+list(APPEND includes ${external_dir}/span-lite/include)
+
+# spdlog
+include(${cmake_path}/spdlog.cmake)
+
 # sshash
 include(${cmake_path}/sshash.cmake)
+
+# TurboPFor-Integer-Compression
+include(${cmake_path}/TurboPFor-Integer-Compression.cmake)
+
+# xxHash
+include(${cmake_path}/xxHash.cmake)
 
 # zlib
 find_package(ZLIB REQUIRED)
@@ -99,6 +142,11 @@ set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
 list(APPEND deps_libs Threads::Threads)
+
+############################################################
+## config.hpp file
+
+configure_file("${PROJECT_SOURCE_DIR}/include/kmtricks/config.h.in" ${PROJECT_BINARY_DIR}/include/kmtricks/config.hpp)
 
 ############################################################
 ## Set executable output directory
@@ -125,6 +173,7 @@ set(kmat_tools_sources
 
 add_executable(kmat_tools ${kmat_tools_sources})
 
+target_compile_definitions(kmat_tools PRIVATE DMAX_C=${MAX_C})
 target_include_directories(kmat_tools PRIVATE ${includes})
 target_link_libraries(kmat_tools ${deps_libs})
 add_dependencies(kmat_tools ${deps})
@@ -134,11 +183,12 @@ add_dependencies(kmat_tools ${deps})
 
 set(muset_sources
   src/muset.cpp
-  src/cli.cpp
+  src/muset_cli.cpp
 )
 
 add_executable(muset-cpp ${muset_sources})
 
+target_compile_definitions(muset-cpp PRIVATE DMAX_C=${MAX_C})
 target_include_directories(muset-cpp PRIVATE ${includes})
 target_link_libraries(muset-cpp ${deps_libs})
 add_dependencies(muset-cpp ${deps})

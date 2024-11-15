@@ -1,0 +1,6 @@
+file(GLOB EX_FILES RELATIVE ${PROJECT_SOURCE_DIR}/examples "*_bcli_*.cpp")
+foreach(ex_cpp ${EX_FILES})
+    string (REPLACE ".cpp" "" name ${ex_cpp})
+    add_executable(${name} ${ex_cpp})
+    target_link_libraries(${name} bcli)
+endforeach()

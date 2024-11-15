@@ -1,5 +1,3 @@
-#define KMER_LIST 32, 64
-#define KMER_N 2
 #define DMAX_C 4294967295
 #define WITH_KM_IO
 

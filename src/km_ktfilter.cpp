@@ -6,7 +6,9 @@
 
 #include <fmt/format.h>
 
-#include "kmtricks.h"
+#define WITH_KM_IO
+#include <kmtricks/public.hpp>
+
 #include "common.h"
 
 namespace fs = std::filesystem;
