@@ -4,3 +4,6 @@
 [submodule "external/fmt"]
 	path = external/fmt
 	url = https://github.com/fmtlib/fmt.git
+[submodule "external/bcli"]
+	path = external/bcli
+	url = https://github.com/tlemane/bcli.git
