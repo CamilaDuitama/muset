@@ -4,24 +4,3 @@
 [submodule "external/fmt"]
 	path = external/fmt
 	url = https://github.com/fmtlib/fmt.git
-[submodule "external/bcli"]
-	path = external/bcli
-	url = https://github.com/tlemane/bcli.git
-[submodule "external/cfrcat"]
-	path = external/cfrcat
-	url = https://github.com/tlemane/cfrcat.git
-[submodule "external/indicators"]
-	path = external/indicators
-	url = https://github.com/p-ranav/indicators.git
-[submodule "external/kff-cpp-api"]
-	path = external/kff-cpp-api
-	url = https://github.com/Kmer-File-Format/kff-cpp-api.git
-[submodule "external/robin-hood-hashing"]
-	path = external/robin-hood-hashing
-	url = https://github.com/martinus/robin-hood-hashing.git
-[submodule "external/spdlog"]
-	path = external/spdlog
-	url = https://github.com/gabime/spdlog.git
-[submodule "external/xxHash"]
-	path = external/xxHash
-	url = https://github.com/Cyan4973/xxHash.git
