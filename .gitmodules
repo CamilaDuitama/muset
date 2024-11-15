@@ -4,30 +4,24 @@
 [submodule "external/fmt"]
 	path = external/fmt
 	url = https://github.com/fmtlib/fmt.git
-[submodule "external/kmtricks-logan/thirdparty/bcli"]
-	path = external/kmtricks-logan/thirdparty/bcli
+[submodule "external/bcli"]
+	path = external/bcli
 	url = https://github.com/tlemane/bcli.git
-[submodule "external/kmtricks-logan/thirdparty/cfrcat"]
-	path = external/kmtricks-logan/thirdparty/cfrcat
+[submodule "external/cfrcat"]
+	path = external/cfrcat
 	url = https://github.com/tlemane/cfrcat.git
-[submodule "external/kmtricks-logan/thirdparty/fmt"]
-	path = external/kmtricks-logan/thirdparty/fmt
-	url = https://github.com/fmtlib/fmt.git
-[submodule "external/kmtricks-logan/thirdparty/indicators"]
-	path = external/kmtricks-logan/thirdparty/indicators
+[submodule "external/indicators"]
+	path = external/indicators
 	url = https://github.com/p-ranav/indicators.git
-[submodule "external/kmtricks-logan/thirdparty/kff-cpp-api"]
-	path = external/kmtricks-logan/thirdparty/kff-cpp-api
+[submodule "external/kff-cpp-api"]
+	path = external/kff-cpp-api
 	url = https://github.com/Kmer-File-Format/kff-cpp-api.git
-[submodule "external/kmtricks-logan/thirdparty/lz4"]
-	path = external/kmtricks-logan/thirdparty/lz4
-	url = https://github.com/lz4/lz4.git
-[submodule "external/kmtricks-logan/thirdparty/robin-hood-hashing"]
-	path = external/kmtricks-logan/thirdparty/robin-hood-hashing
+[submodule "external/robin-hood-hashing"]
+	path = external/robin-hood-hashing
 	url = https://github.com/martinus/robin-hood-hashing.git
-[submodule "external/kmtricks-logan/thirdparty/spdlog"]
-	path = external/kmtricks-logan/thirdparty/spdlog
+[submodule "external/spdlog"]
+	path = external/spdlog
 	url = https://github.com/gabime/spdlog.git
-[submodule "external/kmtricks-logan/thirdparty/xxHash"]
-	path = external/kmtricks-logan/thirdparty/xxHash
+[submodule "external/xxHash"]
+	path = external/xxHash
 	url = https://github.com/Cyan4973/xxHash.git
