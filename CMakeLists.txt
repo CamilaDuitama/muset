@@ -147,6 +147,7 @@ list(APPEND deps_libs Threads::Threads)
 ## config.hpp file
 
 configure_file("${PROJECT_SOURCE_DIR}/include/kmtricks/config.h.in" ${PROJECT_BINARY_DIR}/include/kmtricks/config.hpp)
+configure_file("${PROJECT_SOURCE_DIR}/include/kmat_tools/config.h.in" ${PROJECT_BINARY_DIR}/include/kmat_tools/config.h)
 
 ############################################################
 ## Set executable output directory
@@ -177,6 +178,18 @@ target_compile_definitions(kmat_tools PRIVATE DMAX_C=${MAX_C})
 target_include_directories(kmat_tools PRIVATE ${includes})
 target_link_libraries(kmat_tools ${deps_libs})
 add_dependencies(kmat_tools ${deps})
+
+set(kmat_sources
+  src/kmat_tools.cpp
+  src/kmat_cli.cpp
+)
+
+add_executable(kmat_tools-cpp ${kmat_sources})
+
+target_compile_definitions(kmat_tools-cpp PRIVATE DMAX_C=${MAX_C})
+target_include_directories(kmat_tools-cpp PRIVATE ${includes})
+target_link_libraries(kmat_tools-cpp ${deps_libs})
+add_dependencies(kmat_tools-cpp ${deps})
 
 ############################################################
 # muset cpp executable

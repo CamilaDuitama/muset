@@ -8,7 +8,7 @@ int main_merge(int argc, char **argv) {
   bool use_ktcmp = false, help_opt = false;
 
   int c;
-  while ((c = getopt(argc, argv, "k:o:h")) != -1) {
+  while ((c = getopt(argc, argv, "k:o:zh")) != -1) {
     switch (c) {
       case 'k':
         ksize = strtol(optarg, NULL, 10);
