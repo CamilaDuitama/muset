@@ -8,6 +8,8 @@
 
 #include <kmat_tools/config.h>
 #include <kmat_tools/cli/cli_common.h>
+#include <kmat_tools/cli/fafmt.h>
+#include <kmat_tools/cli/fasta.h>
 #include <kmat_tools/cli/merge.h>
 
 namespace kmat
@@ -29,6 +31,8 @@ private:
   
   cli_t cli {nullptr};
   merge_opt_t merge_opt {nullptr};
+  fafmt_opt_t fafmt_opt {nullptr};
+  fasta_opt_t fasta_opt {nullptr};
   
 };
 

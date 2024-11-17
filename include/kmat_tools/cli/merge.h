@@ -9,8 +9,6 @@ struct merge_options : kmat_options
   uint32_t kmer_size{31};
   std::string output;
   bool actg_order{false};
-
-  std::vector<std::string> inputs;
 };
 
 using merge_opt_t = std::shared_ptr<struct merge_options>;

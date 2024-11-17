@@ -22,7 +22,13 @@ int main(int argc, char* argv[])
 
   try
   {
-    if (cmd == kmat::COMMAND::MERGE) {
+    if (cmd == kmat::COMMAND::FAFMT) {
+      kmat::fafmt_opt_t opt = std::static_pointer_cast<struct kmat::fafmt_options>(options);
+      return kmat::main_fafmt(opt);
+    } else if (cmd == kmat::COMMAND::FASTA) {
+      kmat::fasta_opt_t opt = std::static_pointer_cast<struct kmat::fasta_options>(options);
+      return kmat::main_fasta(opt);
+    } else if (cmd == kmat::COMMAND::MERGE) {
       kmat::merge_opt_t opt = std::static_pointer_cast<struct kmat::merge_options>(options);
       return kmat::main_merge(opt);
     }

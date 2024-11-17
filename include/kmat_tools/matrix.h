@@ -42,7 +42,7 @@ class TextMatrixReader {
     inline bool read_kmer(std::string &kmer) {
 
       if (!this->getline()) { return false; }
-      kmer = std::string_view{ m_line, m_line.find_first_of(" \t") };
+      kmer = std::string_view{ m_line.data(), m_line.find_first_of(" \t") };
       return true;
     }
 
@@ -62,6 +62,10 @@ class TextMatrixReader {
       return true;
     }
 
+    inline size_t line_count() const {
+      return m_line_count;
+    }
+
   private:
 
     inline bool getline() {
@@ -75,7 +79,7 @@ class TextMatrixReader {
       if (m_stream->eof() && m_line.empty()) {
         return false;
       } else if (m_stream->bad() || m_stream->fail()) {
-        throw std::runtime_error(fmt::format("bad unexpected error reading from {}", m_path));
+        throw std::runtime_error(fmt::format("unexpected error reading from {}", m_path));
       }
 
       m_line_count++;

@@ -14,11 +14,13 @@ kmatCli::kmatCli(
 {
   cli = std::make_shared<bc::Parser<1>>(bc::Parser<1>(name, desc, version, authors));
   
+  fafmt_opt = std::make_shared<struct fafmt_options>();
+  fasta_opt = std::make_shared<struct fasta_options>();
   merge_opt = std::make_shared<struct merge_options>();
-  //filter_opt = std::make_shared<struct filter_options>(filter_options{});
 
+  fafmt_cli(cli, fafmt_opt);
+  fasta_cli(cli, fasta_opt);
   merge_cli(cli, merge_opt);
-  //filter_cli(cli, filter_opt);
 }
 
 std::tuple<COMMAND, kmat_opt_t> kmatCli::parse(int argc, char* argv[])
@@ -44,12 +46,69 @@ std::tuple<COMMAND, kmat_opt_t> kmatCli::parse(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    if (cli->is("merge")) {
+    if (cli->is("fafmt")) {
+        this->fafmt_opt->inputs = cli->get_positionals();
+        return std::make_tuple(COMMAND::FAFMT, this->fafmt_opt);
+    } else if (cli->is("fasta")) {
+        this->fasta_opt->inputs = cli->get_positionals();
+        return std::make_tuple(COMMAND::FASTA, this->fasta_opt);
+    } else if (cli->is("merge")) {
         this->merge_opt->inputs = cli->get_positionals();
         return std::make_tuple(COMMAND::MERGE, this->merge_opt);
     } else {
         return std::make_tuple(COMMAND::UNKNOWN, std::make_shared<struct kmat_options>());
     }
+}
+
+
+kmat_opt_t fafmt_cli(std::shared_ptr<bc::Parser<1>> cli, fafmt_opt_t opt)
+{
+    bc::cmd_t fafmt = cli->add_command("fafmt", "Filter a FASTA file by length and write sequences in single lines");
+
+    fafmt->add_param("-l/--min-length", "minimum sequence length")
+         ->meta("INT")
+         ->def("0")
+         ->setter(opt->min_length);
+
+    fafmt->add_param("-o/--output", "output file.")
+         ->meta("FILE")
+         ->def("")
+         ->setter(opt->output);
+    
+    fafmt->add_param("-h/--help", "show this message and exit.")
+         ->as_flag()
+         ->action(bc::Action::ShowHelp);
+    
+    fafmt->add_param("-v/--version", "show version and exit.")
+         ->as_flag()
+         ->action(bc::Action::ShowVersion);
+
+    fafmt->set_positionals(1, "<input.fa>", "");
+
+    return opt;
+}
+
+
+kmat_opt_t fasta_cli(std::shared_ptr<bc::Parser<1>> cli, fasta_opt_t opt)
+{
+    bc::cmd_t fasta = cli->add_command("fasta", "Output a k-mer matrix in FASTA format");
+
+    fasta->add_param("-o/--output", "output file.")
+         ->meta("FILE")
+         ->def("")
+         ->setter(opt->output);
+    
+    fasta->add_param("-h/--help", "show this message and exit.")
+         ->as_flag()
+         ->action(bc::Action::ShowHelp);
+    
+    fasta->add_param("-v/--version", "show version and exit.")
+         ->as_flag()
+         ->action(bc::Action::ShowVersion);
+
+    fasta->set_positionals(1, "<in.mat>", "");
+
+    return opt;
 }
 
 

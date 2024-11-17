@@ -2,7 +2,7 @@
 #include <fstream>
 #include <filesystem>
 
-#include "../external/kseq++/seqio.hpp"
+#include <kseq++/seqio.hpp>
 
 #include "common.h"
 

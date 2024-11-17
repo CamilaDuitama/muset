@@ -6,7 +6,7 @@
 #include <sstream>
 #include <filesystem>
 
-#include "../external/kseq++/seqio.hpp"
+#include <kseq++/seqio.hpp>
 #include "../external/sshash/dictionary.hpp"
 
 #include "common.h"

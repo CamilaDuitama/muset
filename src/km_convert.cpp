@@ -5,7 +5,7 @@
 #include <string>
 #include <filesystem>
 
-#include "../external/kseq++/seqio.hpp"
+#include <kseq++/seqio.hpp>
 #include "../external/json/json.hpp"
 #include "common.h"
 

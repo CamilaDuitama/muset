@@ -4,6 +4,7 @@
 #include <memory>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include <bcli/bcli.hpp>
 
@@ -73,7 +74,10 @@ inline std::string cmd_to_str(COMMAND cmd)
     return "unknown";
 }
 
-struct kmat_options { };
+struct kmat_options {
+  std::vector<std::string> inputs;
+};
+
 using kmat_opt_t = std::shared_ptr<struct kmat_options>;
 
 using cli_t = std::shared_ptr<bc::Parser<1>>;

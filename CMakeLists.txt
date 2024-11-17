@@ -109,6 +109,9 @@ list(APPEND includes ${external_dir}/indicators/include)
 # kff-cpp-api
 include(${cmake_path}/kff-cpp-api.cmake)
 
+# kseq++
+list(APPEND includes ${external_dir}/kseq++/include)
+
 # kmtricks-logan
 # include(${cmake_path}/kmtricks.cmake)
 
