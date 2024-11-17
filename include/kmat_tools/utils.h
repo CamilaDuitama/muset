@@ -1,11 +1,18 @@
 #pragma once
 
+#include <cstddef>
+#include <filesystem>
 #include <string>
 #include <string_view>
 #include <type_traits>
-
 #include <unistd.h>
 
+#include <fmt/format.h>
+
+namespace fs = std::filesystem;
+
+
+namespace kmat {
 
 static const int isnuc[256] = {
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
@@ -100,6 +107,13 @@ static size_t get_nb_samples(const std::string_view line, bool skip_first = fals
 }
 
 
+static inline bool is_kmtricks_dir(const fs::path& dir) {
+  return fs::is_directory(dir)
+    && fs::is_regular_file(dir/"kmtricks.fof")
+    && fs::is_regular_file(dir/"run_infos.txt");
+};
+
+
 // https://locklessinc.com/articles/sat_arithmetic/
 template<typename T, class = typename std::enable_if<std::is_unsigned_v<T>>::type>
 inline T add_sat(T a, T b) noexcept {
@@ -108,3 +122,4 @@ inline T add_sat(T a, T b) noexcept {
 	return res;
 }
 
+}; // namespace kmat
