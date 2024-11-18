@@ -11,8 +11,6 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-#include <kseq++/seqio.hpp>
-
 #define WITH_KM_IO
 #include <kmtricks/public.hpp>
 

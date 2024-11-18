@@ -25,7 +25,7 @@ int main_fasta(fasta_opt_t opt)
     std::ofstream ofs;
     if(!(opt->output).empty()) {
         ofs.open((opt->output).c_str());
-        if(!ofs.good()) { throw std::runtime_error(fmt::format("cannot to open {}", opt->output)); }
+        if(!ofs.good()) { throw std::runtime_error(fmt::format("cannot open {}", opt->output)); }
         fpout = &ofs;
     }
 

@@ -11,18 +11,22 @@ kmatCli::kmatCli(
     const std::string& desc,
     const std::string& version,
     const std::string& authors)
-{
-  cli = std::make_shared<bc::Parser<1>>(bc::Parser<1>(name, desc, version, authors));
+{   
+    cli = std::make_shared<bc::Parser<1>>(bc::Parser<1>(name, desc, version, authors));
   
-  fafmt_opt = std::make_shared<struct fafmt_options>();
-  fasta_opt = std::make_shared<struct fasta_options>();
-  filter_opt = std::make_shared<struct filter_options>();
-  merge_opt = std::make_shared<struct merge_options>();
+    convert_opt = std::make_shared<struct convert_options>();
+    diff_opt = std::make_shared<struct diff_options>();
+    fafmt_opt = std::make_shared<struct fafmt_options>();
+    fasta_opt = std::make_shared<struct fasta_options>();
+    filter_opt = std::make_shared<struct filter_options>();
+    merge_opt = std::make_shared<struct merge_options>();
 
-  fafmt_cli(cli, fafmt_opt);
-  fasta_cli(cli, fasta_opt);
-  filter_cli(cli, filter_opt);
-  merge_cli(cli, merge_opt);
+    convert_cli(cli, convert_opt);
+    diff_cli(cli, diff_opt);
+    fafmt_cli(cli, fafmt_opt);
+    fasta_cli(cli, fasta_opt);
+    filter_cli(cli, filter_opt);
+    merge_cli(cli, merge_opt);
 }
 
 std::tuple<COMMAND, kmat_opt_t> kmatCli::parse(int argc, char* argv[])
@@ -48,7 +52,15 @@ std::tuple<COMMAND, kmat_opt_t> kmatCli::parse(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    if (cli->is("fafmt")) {
+    if (cli->is("convert")) {
+        this->convert_opt->inputs = cli->get_positionals();
+        return std::make_tuple(COMMAND::CONVERT, this->convert_opt);
+    }
+    else if (cli->is("diff")) {
+        this->diff_opt->inputs = cli->get_positionals();
+        return std::make_tuple(COMMAND::DIFF, this->diff_opt);
+    }
+    else if (cli->is("fafmt")) {
         this->fafmt_opt->inputs = cli->get_positionals();
         return std::make_tuple(COMMAND::FAFMT, this->fafmt_opt);
     }
@@ -70,6 +82,81 @@ std::tuple<COMMAND, kmat_opt_t> kmatCli::parse(int argc, char* argv[])
 }
 
 
+kmat_opt_t convert_cli(std::shared_ptr<bc::Parser<1>> cli, convert_opt_t opt)
+{
+    bc::cmd_t convert = cli->add_command("convert", "Convert ggcat jsonl color output into a unitig matrix");
+
+    convert->add_param("-p/--pa-out", "output a binary presence-absence matrix, instead of k-mer fractions")
+        ->as_flag()
+        ->setter(opt->ap_flag);
+
+    convert->add_param("-f/--min-frac", "minimum fraction to set presence to 1 (effective with -p). [0.5, 1.0]")
+        ->meta("FLOAT")
+        ->def("0.8")
+        ->checker(bc::check::f::range(0.5, 1.0))
+        ->setter(opt->min_frac)
+        ->callback([opt](){ opt->min_frac_set = true; });
+
+    convert->add_param("-s/--write-seq", "write unitig sequence instead of ID in the output matrix")
+        ->as_flag()
+        ->setter(opt->out_write_seq);
+
+    convert->add_param("-H/--no-header", "do not write header in output matrix")
+        ->as_flag()
+        ->setter(opt->no_header);
+
+    convert->add_param("--csv", "write csv output")
+        ->as_flag()
+        ->setter(opt->out_csv);
+
+    convert->add_param("-o/--output", "output file. {stdout}")
+         ->meta("FILE")
+         ->def("")
+         ->setter(opt->out_fname);
+    
+    convert->add_param("-h/--help", "show this message and exit.")
+         ->as_flag()
+         ->action(bc::Action::ShowHelp);
+    
+    convert->add_param("-v/--version", "show version and exit.")
+         ->as_flag()
+         ->action(bc::Action::ShowVersion);
+
+    convert->set_positionals(3,
+        "<unitigs.fasta> <color_names_dump.jsonl> <query_output.jsonl>",
+        "");
+
+    return opt;
+}
+
+
+kmat_opt_t diff_cli(std::shared_ptr<bc::Parser<1>> cli, diff_opt_t opt)
+{
+    bc::cmd_t diff = cli->add_command("diff", "Difference between two sorted k-mer matrices");
+    
+    diff->add_param("-o/--output", "output file. {stdout}")
+         ->meta("FILE")
+         ->def("")
+         ->setter(opt->output);
+    
+    diff->add_param("-z/--actg", "use A<C<T<G order of nucleotides")
+         ->as_flag()
+         ->setter(opt->actg_order);
+
+    diff->add_param("-h/--help", "show this message and exit.")
+         ->as_flag()
+         ->action(bc::Action::ShowHelp);
+    
+    diff->add_param("-v/--version", "show version and exit.")
+         ->as_flag()
+         ->action(bc::Action::ShowVersion);
+
+    diff->set_positionals(2, "<matrix_1> <matrix_2>", "Two text-based k-mer matrices");
+
+    return opt;
+}
+
+
 kmat_opt_t fafmt_cli(std::shared_ptr<bc::Parser<1>> cli, fafmt_opt_t opt)
 {
     bc::cmd_t fafmt = cli->add_command("fafmt", "Filter a FASTA file by length and write sequences in single lines");
@@ -79,7 +166,7 @@ kmat_opt_t fafmt_cli(std::shared_ptr<bc::Parser<1>> cli, fafmt_opt_t opt)
          ->def("0")
          ->setter(opt->min_length);
 
-    fafmt->add_param("-o/--output", "output file.")
+    fafmt->add_param("-o/--output", "output file. {stdout}")
          ->meta("FILE")
          ->def("")
          ->setter(opt->output);
@@ -102,7 +189,7 @@ kmat_opt_t fasta_cli(std::shared_ptr<bc::Parser<1>> cli, fasta_opt_t opt)
 {
     bc::cmd_t fasta = cli->add_command("fasta", "Output a k-mer matrix in FASTA format");
 
-    fasta->add_param("-o/--output", "output file.")
+    fasta->add_param("-o/--output", "output file. {stdout}")
          ->meta("FILE")
          ->def("")
          ->setter(opt->output);
@@ -127,7 +214,7 @@ kmat_opt_t filter_cli(std::shared_ptr<bc::Parser<1>> cli, filter_opt_t opt)
 
     filter->add_group("main options", "");
 
-    filter->add_param("-o/--output", "output file.")
+    filter->add_param("-o/--output", "output file. {stdout}")
         ->meta("FILE")
         ->def("")
         ->setter(opt->output);
@@ -205,7 +292,7 @@ kmat_opt_t merge_cli(std::shared_ptr<bc::Parser<1>> cli, merge_opt_t opt)
          ->def("31")
          ->setter(opt->kmer_size);
     
-    merge->add_param("-o/--output", "output file.")
+    merge->add_param("-o/--output", "output file. {stdout}")
          ->meta("FILE")
          ->def("")
          ->setter(opt->output);
@@ -222,7 +309,7 @@ kmat_opt_t merge_cli(std::shared_ptr<bc::Parser<1>> cli, merge_opt_t opt)
          ->as_flag()
          ->action(bc::Action::ShowVersion);
 
-    merge->set_positionals(2, "<MATRIX_1> <MATRIX_2>", "Two text-based k-mer matrices");
+    merge->set_positionals(2, "<matrix_1> <matrix_2>", "Two text-based k-mer matrices");
 
     return opt;
 }

@@ -106,6 +106,9 @@ include(${cmake_path}/gatb-core-stripped.cmake)
 # indicators
 list(APPEND includes ${external_dir}/indicators/include)
 
+# json
+list(APPEND includes ${external_dir}/json/include)
+
 # kff-cpp-api
 include(${cmake_path}/kff-cpp-api.cmake)
 
@@ -163,6 +166,7 @@ message(STATUS "Executables output directory: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
 
 set(kmat_tools_sources
   src/km_basic_filter.cpp
+  src/km_convert.cpp
   src/km_diff.cpp
   src/km_fafmt.cpp
   src/km_fasta.cpp
@@ -172,7 +176,6 @@ set(kmat_tools_sources
   src/km_select.cpp
   src/km_tools.cpp
   src/km_unitig.cpp
-  src/km_convert.cpp
 )
 
 add_executable(kmat_tools ${kmat_tools_sources})
@@ -182,12 +185,9 @@ target_include_directories(kmat_tools PRIVATE ${includes})
 target_link_libraries(kmat_tools ${deps_libs})
 add_dependencies(kmat_tools ${deps})
 
-set(kmat_sources
-  src/kmat_tools.cpp
-  src/kmat_cli.cpp
-)
+# C++ version
 
-add_executable(kmat_tools-cpp ${kmat_sources})
+add_executable(kmat_tools-cpp src/kmat_cli.cpp src/kmat_tools.cpp)
 
 target_compile_definitions(kmat_tools-cpp PRIVATE DMAX_C=${MAX_C})
 target_include_directories(kmat_tools-cpp PRIVATE ${includes})

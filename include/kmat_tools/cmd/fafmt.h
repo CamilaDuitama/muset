@@ -27,7 +27,7 @@ int main_fafmt(fafmt_opt_t opt)
     std::ofstream ofs;
     if(!(opt->output).empty()) {
         ofs.open((opt->output).c_str());
-        if(!ofs.good()) { throw std::runtime_error(fmt::format("cannot to open output file {}", opt->output)); }
+        if(!ofs.good()) { throw std::runtime_error(fmt::format("cannot open output file {}", opt->output)); }
         fpout = &ofs;
     }
 

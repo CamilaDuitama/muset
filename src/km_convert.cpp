@@ -6,7 +6,7 @@
 #include <filesystem>
 
 #include <kseq++/seqio.hpp>
-#include "../external/json/json.hpp"
+#include <nlohmann/json.hpp>
 #include "common.h"
 
 using json = nlohmann::json;
@@ -54,8 +54,7 @@ int main_convert(int argc, char* argv[]) {
     std::cerr << "Usage: kmat_tools convert [options] <unitig_sequences.fasta> <color_names_dump.jsonl> <query_output.jsonl>\n\n";
     std::cerr << "Converts the jsonl output of ggcat into an unitig matrix in csv format.\n\n";
     std::cerr << "Options:\n";
-    std::cerr << "  -p      if you want the matrix to be absence/presence (i.e. 0/1) and not\n";
-    std::cerr << "           with k-mer presence ratios.\n";
+    std::cerr << "  -p      if you want the matrix to be absence/presence (i.e. 0/1) and not with k-mer presence ratios.\n";
     std::cerr << "  -m float minimum value to set the presence to 1 (taking values >= of m) [0.8]\n";
     std::cerr << "  -s flag to indicate you want the unitig sequence and not the id in the matrix\n";
     std::cerr << "  -o FILE  write unitig matrix to FILE [stdout]\n";

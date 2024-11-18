@@ -8,6 +8,8 @@
 
 #include <kmat_tools/config.h>
 #include <kmat_tools/cli/cli_common.h>
+#include <kmat_tools/cli/convert.h>
+#include <kmat_tools/cli/diff.h>
 #include <kmat_tools/cli/fafmt.h>
 #include <kmat_tools/cli/fasta.h>
 #include <kmat_tools/cli/filter.h>
@@ -32,10 +34,12 @@ private:
   
   cli_t cli {nullptr};
   
-  fafmt_opt_t fafmt_opt {nullptr};
-  fasta_opt_t fasta_opt {nullptr};
-  filter_opt_t filter_opt {nullptr};
-  merge_opt_t merge_opt {nullptr};  
+  convert_opt_t convert_opt {nullptr};
+  diff_opt_t    diff_opt {nullptr};
+  fafmt_opt_t   fafmt_opt {nullptr};
+  fasta_opt_t   fasta_opt {nullptr};
+  filter_opt_t  filter_opt {nullptr};
+  merge_opt_t   merge_opt {nullptr};  
 };
 
 };  // namespace kmat
