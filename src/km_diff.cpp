@@ -73,12 +73,7 @@ int main_diff(int argc, char **argv) {
   size_t line_1_size = 0, line_2_size = 0;
 
   bool has_kmer_1 = next_kmer_and_line(kmer_1, ksize, &line_1, &line_1_size, mat_1);
-  size_t n_sample_1 = has_kmer_1 ? samples_number(line_1) : 0;
-  fprintf(stderr,"[info] samples in 1st matrix: %lu\n", n_sample_1);
-
   bool has_kmer_2 = next_kmer_and_line(kmer_2, ksize, &line_2, &line_2_size, mat_2);
-  size_t n_sample_2 = has_kmer_2 ? samples_number(line_2) : 0;
-  fprintf(stderr,"[info] samples in 2nd matrix: %lu\n", n_sample_2);
 
   while(has_kmer_1 && has_kmer_2){
     int ret_cmp = use_ktcmp ? ktcmp(kmer_1,kmer_2) : strcmp(kmer_1,kmer_2);
@@ -95,11 +90,7 @@ int main_diff(int argc, char **argv) {
   }
 
   while(has_kmer_1) {
-    fputs(kmer_1,outfile);
-    fputc(' ',outfile);
-    fputs(second_column(line_1),outfile);
-    for(size_t i=0; i<n_sample_2; ++i){ fputs(" 0",outfile); }
-    fputc('\n',outfile);
+    fputs(line_1,outfile);
     has_kmer_1 = next_kmer_and_line(kmer_1, ksize, &line_1, &line_1_size, mat_1);
   }
 
