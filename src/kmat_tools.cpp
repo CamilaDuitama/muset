@@ -50,6 +50,10 @@ int main(int argc, char* argv[])
             kmat::merge_opt_t opt = std::static_pointer_cast<struct kmat::merge_options>(options);
             return kmat::main_merge(opt);
         }
+        else if (cmd == kmat::COMMAND::REVERSE) {
+            kmat::reverse_opt_t opt = std::static_pointer_cast<struct kmat::reverse_options>(options);
+            return kmat::main_reverse(opt);
+        }
     }
     catch (const std::exception& e)
     {

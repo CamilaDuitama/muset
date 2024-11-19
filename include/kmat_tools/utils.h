@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cstddef>
 #include <filesystem>
 #include <string>
@@ -83,6 +84,17 @@ static inline int actg_compare(const std::string &a, const std::string &b) {
   const auto b_size = b.size();
   const int cmp = actg_compare(a.data(), b.data(), std::min(a_size,b_size));
   return cmp != 0 ? cmp : (a_size == b_size ? 0 : a_size < b_size ? -1 : 1 );
+}
+
+
+static inline bool is_valid_kmer(const std::string& kmer) {
+  return std::all_of(kmer.begin(), kmer.end(), [](char c){return kmat::isnuc[c];});
+}
+
+
+static inline void reverse_complement_inplace(std::string &seq) {
+    std::reverse(seq.begin(), seq.end());
+    std::for_each(seq.begin(), seq.end(), [](char& c){ c = rctable[c]; });
 }
 
 

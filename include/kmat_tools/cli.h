@@ -14,6 +14,8 @@
 #include <kmat_tools/cli/fasta.h>
 #include <kmat_tools/cli/filter.h>
 #include <kmat_tools/cli/merge.h>
+#include <kmat_tools/cli/reverse.h>
+
 
 namespace kmat
 {
@@ -39,7 +41,8 @@ private:
   fafmt_opt_t   fafmt_opt {nullptr};
   fasta_opt_t   fasta_opt {nullptr};
   filter_opt_t  filter_opt {nullptr};
-  merge_opt_t   merge_opt {nullptr};  
+  merge_opt_t   merge_opt {nullptr};
+  reverse_opt_t reverse_opt {nullptr};
 };
 
 };  // namespace kmat

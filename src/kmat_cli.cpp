@@ -20,6 +20,7 @@ kmatCli::kmatCli(
     fasta_opt = std::make_shared<struct fasta_options>();
     filter_opt = std::make_shared<struct filter_options>();
     merge_opt = std::make_shared<struct merge_options>();
+    reverse_opt = std::make_shared<struct reverse_options>();
 
     convert_cli(cli, convert_opt);
     diff_cli(cli, diff_opt);
@@ -27,6 +28,7 @@ kmatCli::kmatCli(
     fasta_cli(cli, fasta_opt);
     filter_cli(cli, filter_opt);
     merge_cli(cli, merge_opt);
+    reverse_cli(cli, reverse_opt);
 }
 
 std::tuple<COMMAND, kmat_opt_t> kmatCli::parse(int argc, char* argv[])
@@ -75,6 +77,10 @@ std::tuple<COMMAND, kmat_opt_t> kmatCli::parse(int argc, char* argv[])
     else if (cli->is("filter")) {
         this->filter_opt->inputs = cli->get_positionals();
         return std::make_tuple(COMMAND::FILTER, this->filter_opt);
+    }
+    else if (cli->is("reverse")) {
+        this->reverse_opt->inputs = cli->get_positionals();
+        return std::make_tuple(COMMAND::REVERSE, this->reverse_opt);
     }
     else {
         return std::make_tuple(COMMAND::UNKNOWN, std::make_shared<struct kmat_options>());
@@ -310,6 +316,29 @@ kmat_opt_t merge_cli(std::shared_ptr<bc::Parser<1>> cli, merge_opt_t opt)
          ->action(bc::Action::ShowVersion);
 
     merge->set_positionals(2, "<matrix_1> <matrix_2>", "Two text-based k-mer matrices");
+
+    return opt;
+}
+
+
+kmat_opt_t reverse_cli(std::shared_ptr<bc::Parser<1>> cli, reverse_opt_t opt)
+{
+    bc::cmd_t reverse = cli->add_command("reverse", "Reverse-complement k-mers in a k-mer matrix file.");
+    
+    reverse->add_param("-o/--output", "output file. {stdout}")
+         ->meta("FILE")
+         ->def("")
+         ->setter(opt->output);
+
+    reverse->add_param("-h/--help", "show this message and exit.")
+         ->as_flag()
+         ->action(bc::Action::ShowHelp);
+    
+    reverse->add_param("-v/--version", "show version and exit.")
+         ->as_flag()
+         ->action(bc::Action::ShowVersion);
+
+    reverse->set_positionals(1, "<input.mat>", "Text-based k-mer matricx");
 
     return opt;
 }

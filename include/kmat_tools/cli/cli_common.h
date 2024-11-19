@@ -43,6 +43,8 @@ inline COMMAND str_to_cmd(const std::string& s)
   else if (s == "merge")
     return COMMAND::MERGE;
   else if (s == "reverse")
+    return COMMAND::REVERSE;
+  else if (s == "select")
     return COMMAND::SELECT;
   else if (s == "unitig")
     return COMMAND::UNITIG;
@@ -66,6 +68,8 @@ inline std::string cmd_to_str(COMMAND cmd)
     return "ktfilter";
   else if (cmd == COMMAND::MERGE)
     return "merge";
+  else if (cmd == COMMAND::REVERSE)
+    return "reverse";
   else if (cmd == COMMAND::SELECT)
     return "select";
   else if (cmd == COMMAND::UNITIG)

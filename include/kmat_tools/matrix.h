@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <cstddef>
 #include <exception>
@@ -11,6 +12,8 @@
 #include <vector>
 
 #include <fmt/format.h>
+
+#include <kmat_tools/utils.h>
 
 namespace kmat {
 
@@ -24,7 +27,7 @@ class TextMatrixReader {
 
     TextMatrixReader () : m_stream(new std::fstream{}) {}
 
-    TextMatrixReader (const std::string& path) 
+    TextMatrixReader (const std::string& path)
       : m_path(path), m_stream(new std::fstream{path, std::ios::in})
     {
       if (!m_stream->good()) {
@@ -51,12 +54,18 @@ class TextMatrixReader {
     // read kmer and discard the rest of the line
     inline bool read_kmer(std::string &kmer) {
 
-      if (!this->getline()) { return false; }
+      if (!this->get_nonempty_line()) { return false; }
 
       auto idx = m_line.find_first_of(" \t");
       kmer = idx == std::string::npos ? 
         std::string_view{ m_line } : 
         std::string_view{ m_line.data(), idx };
+
+      if(!is_valid_kmer(kmer)) {
+        throw std::runtime_error(
+          fmt::format("bad character found in k-mer \"{}\" at line {}", kmer, this->line_count())
+        );
+      }
       
       return kmer.length() > 0;
     }
@@ -64,16 +73,27 @@ class TextMatrixReader {
     // read kmer and the remaing part of the line
     inline bool read_kmer_and_line(std::string &kmer, std::string &line) {
   
-      if (!this->getline()) { return false; }
+      if (!this->get_nonempty_line()) { return false; }
 
       line.clear();
       
       auto idx = m_line.find_first_of(" \t");
       if (idx == std::string::npos) {
         kmer = m_line;
-        return true;
+        if(!is_valid_kmer(kmer)) {
+          throw std::runtime_error(
+            fmt::format("bad character found in k-mer \"{}\" at line {}", kmer, this->line_count())
+          );
+        }
+        return kmer.length() > 0;
       }
+
       kmer = std::string_view{ m_line.data(), idx };
+      if(!is_valid_kmer(kmer)) {
+        throw std::runtime_error(
+          fmt::format("bad character found in k-mer \"{}\" at line {}", kmer, this->line_count())
+        );
+      }
 
       idx = m_line.find_first_not_of(" \t", idx);
       if (idx != std::string::npos) {
@@ -85,7 +105,7 @@ class TextMatrixReader {
 
     inline bool read_kmer_counts(std::string &kmer, std::vector<size_t> &counts) {
 
-      if (!this->getline()) { return false; }
+      if (!this->get_nonempty_line()) { return false; }
 
       counts.clear();
 
@@ -93,6 +113,12 @@ class TextMatrixReader {
       kmer = idx == std::string::npos ? 
         std::string_view{ m_line } : 
         std::string_view{ m_line.data(), idx };
+
+      if(!is_valid_kmer(kmer)) {
+        throw std::runtime_error(
+          fmt::format("bad character found in k-mer \"{}\" at line {}", kmer, this->line_count())
+        );
+      }
 
       while (idx != std::string::npos) {
 
@@ -109,28 +135,32 @@ class TextMatrixReader {
         idx = ptr - m_line.data();
       }
 
-      return true;
+      return kmer.length() > 0;
     }
 
     
 
   private:
 
-    inline bool getline() {
-      
-      if (!m_stream->good()) {
-        return false;
-      }
+    inline bool get_nonempty_line() {
 
-      std::getline(*m_stream, m_line);
+      do {
+        if (!m_stream->good()) {
+          return false;
+        }
 
-      if (m_stream->eof() && m_line.empty()) {
-        return false;
-      } else if (m_stream->bad() || m_stream->fail()) {
-        throw std::runtime_error(fmt::format("{}: unexpected read error", m_path));
-      }
+        std::getline(*m_stream, m_line);
 
-      m_line_count++;
+        if (m_stream->eof()) {
+          return false;
+        } else if (m_stream->bad() || m_stream->fail()) {
+          throw std::runtime_error(fmt::format("{}: unexpected read error", m_path));
+        }
+        
+        m_line_count++;
+
+      } while (m_line.find_first_not_of(" \t") == std::string::npos);
+
       return true;
     }
 
