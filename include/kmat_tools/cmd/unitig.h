@@ -106,8 +106,8 @@ int main_unitig(unitig_opt_t opt)
 
     spdlog::info("writing unitig matrix");
 
-    std::string matrix_file = fmt::format("{}.abundance.mat");
-    std::string frac_file = fmt::format("{}.frac.mat");
+    std::string matrix_file = fmt::format("{}.abundance.mat", opt->prefix);
+    std::string frac_file = fmt::format("{}.frac.mat", opt->prefix);
 
     std::ofstream mat_ofs(matrix_file);
     if (!mat_ofs.good()) { throw std::runtime_error(fmt::format("cannot open output file \"{}\" for writing", matrix_file)); }
