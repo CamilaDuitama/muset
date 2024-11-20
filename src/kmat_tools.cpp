@@ -10,7 +10,7 @@
 
 int main(int argc, char* argv[])
 {
-    kmat::kmatCli cli("kmat_tools", "a collection of tools to process text-based k-mer matrices", PROJECT_VER, "");
+    kmat::kmatCli cli("kmat_tools", "a collection of tools to process text-based k-mer matrices", MUSET_PROJECT_VER, "");
     auto [cmd, options] = cli.parse(argc, argv);
 
     // set_verbosity_level(options->verbosity);
@@ -57,6 +57,10 @@ int main(int argc, char* argv[])
         else if (cmd == kmat::COMMAND::SELECT) {
             kmat::select_opt_t opt = std::static_pointer_cast<struct kmat::select_options>(options);
             return kmat::main_select(opt);
+        }
+        else if (cmd == kmat::COMMAND::UNITIG) {
+            kmat::unitig_opt_t opt = std::static_pointer_cast<struct kmat::unitig_options>(options);
+            return kmat::main_unitig(opt);
         }
     }
     catch (const std::exception& e)

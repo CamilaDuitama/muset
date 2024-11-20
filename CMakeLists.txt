@@ -153,7 +153,7 @@ list(APPEND deps_libs Threads::Threads)
 ## config.hpp file
 
 configure_file("${PROJECT_SOURCE_DIR}/include/kmtricks/config.h.in" ${PROJECT_BINARY_DIR}/include/kmtricks/config.hpp)
-configure_file("${PROJECT_SOURCE_DIR}/include/kmat_tools/config.h.in" ${PROJECT_BINARY_DIR}/include/kmat_tools/config.h)
+configure_file("${PROJECT_SOURCE_DIR}/src/config.h.in" ${PROJECT_BINARY_DIR}/include/config.h)
 
 ############################################################
 ## Set executable output directory

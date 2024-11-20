@@ -103,7 +103,8 @@ class TextMatrixReader {
       return true;
     }
 
-    inline bool read_kmer_counts(std::string &kmer, std::vector<size_t> &counts) {
+    template<typename count_type>
+    inline bool read_kmer_counts(std::string &kmer, std::vector<count_type> &counts) {
 
       if (!this->get_nonempty_line()) { return false; }
 
@@ -125,7 +126,7 @@ class TextMatrixReader {
         idx = m_line.find_first_not_of(" \t", idx); // skip whitespaces
         if (idx == std::string::npos) { break; }
 
-        size_t value{0};
+        count_type value{0};
         auto [ptr, ec] = std::from_chars(m_line.data()+idx, m_line.data()+m_line.size(), value);
         if (ec != std::errc()) {
           throw std::runtime_error(fmt::format("{}: error loading counts at line {}", this->m_path, this->line_count()));
