@@ -125,7 +125,7 @@ int main_unitig(unitig_opt_t opt)
     for(uint64_t utg_id=0; utg_ssi >> unitig; utg_id++) {  
 
         mat_ofs << (opt->write_seq ? unitig.seq : unitig.name);
-        if(opt->write_frac_matrix) { frac_ofs << " " << (opt->write_seq ? unitig.seq : unitig.name); }
+        if(opt->write_frac_matrix) { frac_ofs << (opt->write_seq ? unitig.seq : unitig.name); }
         auto& samples = unitig_counts[utg_id];
         
         std::size_t utg_nb_kmers {unitig.seq.length() - opt->kmer_size + 1};
