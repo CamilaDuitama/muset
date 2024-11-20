@@ -46,11 +46,12 @@ int main_unitig(unitig_opt_t opt)
 
     sshash::dictionary kmer_dict;
     {
-        // std::ofstream ofs("sshash.log", std::ios::out);
-        // std::streambuf *coutbuf = std::cout.rdbuf();
-        // if (ofs.good()) {
-        //   std::cout.rdbuf(ofs.rdbuf());
-        // }
+        std::string sshash_logfile = fmt::format("{}.sshash.log", opt->prefix);
+        std::ofstream ofs(sshash_logfile, std::ios::out);
+        std::streambuf *coutbuf = std::cout.rdbuf();
+        if (ofs.good()) {
+          std::cout.rdbuf(ofs.rdbuf());
+        }
 
         sshash::build_configuration build_config;
         build_config.k = opt->kmer_size;
@@ -59,10 +60,9 @@ int main_unitig(unitig_opt_t opt)
         build_config.pthash_threads = opt->nb_threads;
         build_config.canonical_parsing = true;
         build_config.verbose = false;
-
         kmer_dict.build(unitig_path, build_config);
 
-        // std::cout.rdbuf(coutbuf);
+        std::cout.rdbuf(coutbuf);
     }
 
     spdlog::debug(fmt::format("k-mer processed: {}", kmer_dict.size()));
