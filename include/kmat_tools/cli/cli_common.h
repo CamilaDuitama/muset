@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include <algorithm>
 #include <bcli/bcli.hpp>
 
 namespace kmat

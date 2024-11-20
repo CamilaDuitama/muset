@@ -1,13 +1,16 @@
 #include <cstdlib>
+#include <filesystem>
 #include <memory>
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-#include "muset_cli.h"
-
 #include <kmtricks/cmd.hpp>
 #include <kmtricks/loop_executor.hpp>
+
+#include <kmat_tools/cmd.h>
+
+#include "muset_cli.h"
 
 
 void kmtricks_pipeline(muset::muset_options_t muset_opt) {
@@ -40,6 +43,32 @@ void kmtricks_pipeline(muset::muset_options_t muset_opt) {
     km::const_loop_executor<0, KMER_N>::exec<km::main_all>(kmtricks_opt->kmer_size, kmtricks_opt);
 }
 
+void kmat_filter(muset::muset_options_t muset_opt) {
+
+    auto filter_opt = std::make_shared<kmat::filter_options>();
+
+    filter_opt->output = muset_opt->filtered_matrix;
+    
+    filter_opt->min_abundance = muset_opt->min_abundance;
+    
+    filter_opt->min_frac_absent = muset_opt->min_frac_absent;
+    filter_opt->min_frac_present = muset_opt->min_frac_present;
+    filter_opt->min_nb_absent_set = muset_opt->min_nb_absent_set;
+    filter_opt->min_nb_absent = muset_opt->min_nb_absent;
+    filter_opt->min_nb_present_set = muset_opt->min_nb_present_set;
+    filter_opt->min_nb_present = muset_opt->min_nb_present;
+
+    filter_opt->keep_tmp = muset_opt->keep_tmp;
+    filter_opt->lz4 = muset_opt->lz4;
+    filter_opt->kmer_size = muset_opt->kmer_size; // not actually needed
+    
+    filter_opt->nb_threads = muset_opt->nb_threads;
+
+    (filter_opt->inputs).push_back(muset_opt->out_dir);
+
+    kmat::main_filter(filter_opt);
+}
+
 
 int main(int argc, char* argv[])
 {
@@ -49,7 +78,7 @@ int main(int argc, char* argv[])
     {
         auto muset_opt = cli.parse(argc, argv);
         muset_opt->sanity_check();
-
+        
         if (!muset_opt->min_utg_len_set) {
             muset_opt->min_utg_len = 2 * muset_opt->kmer_size - 1;
         }
@@ -59,10 +88,17 @@ int main(int argc, char* argv[])
         cerr_logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] %v");
         spdlog::set_default_logger(cerr_logger);
         
-        auto kmer_size = muset_opt->kmer_size;
-        std::cout << muset_opt->display() << std::endl;
+        // auto kmer_size = muset_opt->kmer_size;
+        // std::cout << muset_opt->display() << std::endl;
 
-        kmtricks_pipeline(muset_opt);
+        if(!muset_opt->fof.empty()) {
+            
+            kmtricks_pipeline(muset_opt);
+
+            muset_opt->filtered_matrix = muset_opt->out_dir/"filtered_matrix.mat";
+            kmat_filter(muset_opt);
+
+        }
     }
     catch (const km::km_exception& e) {
         spdlog::error("{} - {}", e.get_name(), e.get_msg());

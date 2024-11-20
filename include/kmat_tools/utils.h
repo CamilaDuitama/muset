@@ -10,10 +10,14 @@
 
 #include <fmt/format.h>
 
+#include "config.h"
+
 namespace fs = std::filesystem;
 
 
 namespace kmat {
+
+constexpr int KL[MUSET_KMER_N] = {MUSET_KMER_LIST};
 
 static const int isnuc[256] = {
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,

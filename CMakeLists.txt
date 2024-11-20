@@ -187,7 +187,11 @@ add_dependencies(kmat_tools ${deps})
 
 # C++ version
 
-add_executable(kmat_tools-cpp src/kmat_cli.cpp src/kmat_tools.cpp)
+set(kmat_tools_cpp_sources
+  src/kmat_unitig.cpp
+)
+
+add_executable(kmat_tools-cpp src/kmat_cli.cpp src/kmat_tools.cpp ${kmat_tools_cpp_sources})
 
 target_compile_definitions(kmat_tools-cpp PRIVATE DMAX_C=${MAX_C})
 target_include_directories(kmat_tools-cpp PRIVATE ${includes})

@@ -43,7 +43,7 @@ std::tuple<COMMAND, kmat_opt_t> kmatCli::parse(int argc, char* argv[])
     }
     else if (argc > 1 && (std::string(argv[1]) == "--version" || std::string(argv[1]) == "-v"))
     {
-        fmt::print("kmtricks {}\n", MUSET_PROJECT_VER);
+        fmt::print("kmat_tools {}\n", MUSET_PROJECT_VER);
         exit(EXIT_FAILURE);
     }
 
@@ -385,64 +385,6 @@ kmat_opt_t select_cli(std::shared_ptr<bc::Parser<1>> cli, select_opt_t opt)
          ->action(bc::Action::ShowVersion);
 
     select->set_positionals(2, "<reference.mat> <input.mat>", "Reference and input (sorted) text-based k-mer matrices");
-
-    return opt;
-}
-
-
-kmat_opt_t unitig_cli(std::shared_ptr<bc::Parser<1>> cli, unitig_opt_t opt)
-{
-    bc::cmd_t unitig = cli->add_command("unitig", "Create a unitig matrix.");
-
-    unitig->add_group("main options", "");
-
-    unitig->add_param("-k/--kmer-size", fmt::format("k-mer size [8,{}].", KL[MUSET_KMER_N-1]-1))
-        ->meta("INT")
-        ->def("31")
-        ->checker(bc::check::f::range(8, KL[MUSET_KMER_N-1]-1))
-        ->setter(opt->kmer_size);
-
-    unitig->add_param("-p/--prefix", "output files prefix.")
-        ->meta("FILE")
-        ->def("out")
-        ->setter(opt->prefix);
-
-    unitig->add_param("-f/--min-frac", "set average abundance to 0 if k-mer fraction is below this threshold [0,1].")
-        ->meta("FLOAT")
-        ->def("0.0")
-        ->checker(bc::check::f::range(0.0, 1.0))
-        ->setter(opt->min_frac);
-
-    unitig->add_param("--out-frac", "output an additional matrix containing k-mer fractions.")
-        ->as_flag()
-        ->setter(opt->write_frac_matrix);
-
-    unitig->add_param("-s/--write-seq", "write the unitig sequence instead of the identifier in the output matrix")
-        ->as_flag()
-        ->setter(opt->write_seq);
-
-    unitig->add_group("other options", "");
-
-    unitig->add_param("-m/--minimizer-size", "minimizer size")
-        ->meta("INT")
-        ->def("15")
-        ->setter(opt->mini_size);
-
-    unitig->add_param("-t/--threads", "number of threads.")
-        ->meta("INT")
-        ->def("4")
-        ->checker(bc::check::is_number)
-        ->setter(opt->nb_threads);
-
-    unitig->add_param("-h/--help", "show this message and exit.")
-         ->as_flag()
-         ->action(bc::Action::ShowHelp);
-    
-    unitig->add_param("-v/--version", "show version and exit.")
-         ->as_flag()
-         ->action(bc::Action::ShowVersion);
-
-    unitig->set_positionals(2, "<unitigs.fasta> <kmer_matrix>", "a unitig fasta file and a text-based k-mer matrix");
 
     return opt;
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <memory>
 #include <string>
 
@@ -11,32 +12,21 @@
 
 #define RECORD(ss, var) ss << #var << "=" << var << ", "
 
-// #include <kmtricks/config.hpp>
-// #include <kmtricks/cli/cli_common.hpp>
-// #include <kmtricks/cli/all.hpp>
-// #include <kmtricks/cli/repart.hpp>
-// #include <kmtricks/cli/superk.hpp>
-// #include <kmtricks/cli/count.hpp>
-// #include <kmtricks/cli/merge.hpp>
-// #include <kmtricks/cli/format.hpp>
-// #include <kmtricks/cli/dump.hpp>
-// #include <kmtricks/cli/infos.hpp>
-// #include <kmtricks/cli/aggregate.hpp>
-// #include <kmtricks/cli/filter.hpp>
-// #include <kmtricks/cli/index.hpp>
-// #include <kmtricks/cli/query.hpp>
-// #include <kmtricks/cli/combine.hpp>
+namespace fs = std::filesystem;
+
 
 namespace muset {
 
 using muset_options_t = std::shared_ptr<struct muset_options>;
 using cli_t = std::shared_ptr<bc::Parser<0>>;
 
+
+
 struct muset_options
 {
-  std::string fof;
-  std::string in_matrix;
-  std::string out_dir;
+  fs::path fof;
+  fs::path in_matrix;
+  fs::path out_dir;
 
   uint32_t kmer_size{0};
   uint32_t mini_size{0};
@@ -58,6 +48,10 @@ struct muset_options
   bool logan{false};
 
   int nb_threads{1};
+
+  // intermediate files, not actual input parameters
+
+  fs::path filtered_matrix;
 
   std::string display()
   {
@@ -103,16 +97,20 @@ struct muset_options
 
     // check existance of the provided input file
     if (!fof.empty() && (!fs::is_regular_file(fof) || fs::is_empty(fof))) {
-      throw std::runtime_error(fmt::format("input file \"{}\" does not exist", fof));
+      throw std::runtime_error(fmt::format("input file \"{}\" does not exist", fof.c_str()));
     }
     if (!in_matrix.empty() && (!fs::is_regular_file(in_matrix) || fs::is_empty(in_matrix))) {
-      throw std::runtime_error(fmt::format("input matrix \"{}\" is not a file or is empty", in_matrix));
+      throw std::runtime_error(fmt::format("input matrix \"{}\" is not a file or is empty", in_matrix.c_str()));
     }
     
     // --logan flag only valid for kmer-size equal to 31
     if ((logan) && (kmer_size != 31))
     {
       throw std::runtime_error("--logan available only for --kmer-size equal to 31");
+    }
+
+    if (mini_size >= kmer_size) {
+      throw std::runtime_error("minimizer size must be smaller than k-mer size");
     }
   }
 

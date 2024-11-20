@@ -22,8 +22,6 @@
 namespace kmat
 {
 
-constexpr int KL[MUSET_KMER_N] = {MUSET_KMER_LIST};
-
 class kmatCli
 {
 
