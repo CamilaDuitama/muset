@@ -391,7 +391,7 @@ kmat_opt_t unitig_cli(std::shared_ptr<bc::Parser<1>> cli, unitig_opt_t opt)
     unitig->add_param("-k/--kmer-size", fmt::format("k-mer size [8,{}].", KL[MUSET_KMER_N-1]-1))
         ->meta("INT")
         ->def("31")
-        ->checker(bc::check::f::range(8, KL[KMER_N-1]-1))
+        ->checker(bc::check::f::range(8, KL[MUSET_KMER_N-1]-1))
         ->setter(opt->kmer_size);
 
     unitig->add_param("-p/--prefix", "output files prefix.")
