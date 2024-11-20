@@ -54,6 +54,10 @@ int main(int argc, char* argv[])
             kmat::reverse_opt_t opt = std::static_pointer_cast<struct kmat::reverse_options>(options);
             return kmat::main_reverse(opt);
         }
+        else if (cmd == kmat::COMMAND::SELECT) {
+            kmat::select_opt_t opt = std::static_pointer_cast<struct kmat::select_options>(options);
+            return kmat::main_select(opt);
+        }
     }
     catch (const std::exception& e)
     {

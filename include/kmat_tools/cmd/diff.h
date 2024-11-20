@@ -5,8 +5,6 @@
 #include <vector>
 
 #include <fmt/format.h>
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <kmat_tools/cli/cli_common.h>
 #include <kmat_tools/cli/diff.h>

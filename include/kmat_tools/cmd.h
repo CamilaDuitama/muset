@@ -8,3 +8,4 @@
 #include <kmat_tools/cmd/filter.h>
 #include <kmat_tools/cmd/merge.h>
 #include <kmat_tools/cmd/reverse.h>
+#include <kmat_tools/cmd/select.h>

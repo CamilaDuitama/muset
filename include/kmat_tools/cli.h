@@ -15,6 +15,7 @@
 #include <kmat_tools/cli/filter.h>
 #include <kmat_tools/cli/merge.h>
 #include <kmat_tools/cli/reverse.h>
+#include <kmat_tools/cli/select.h>
 
 
 namespace kmat
@@ -43,6 +44,7 @@ private:
   filter_opt_t  filter_opt {nullptr};
   merge_opt_t   merge_opt {nullptr};
   reverse_opt_t reverse_opt {nullptr};
+  select_opt_t  select_opt {nullptr};
 };
 
 };  // namespace kmat

@@ -21,6 +21,7 @@ kmatCli::kmatCli(
     filter_opt = std::make_shared<struct filter_options>();
     merge_opt = std::make_shared<struct merge_options>();
     reverse_opt = std::make_shared<struct reverse_options>();
+    select_opt = std::make_shared<struct select_options>();
 
     convert_cli(cli, convert_opt);
     diff_cli(cli, diff_opt);
@@ -29,6 +30,7 @@ kmatCli::kmatCli(
     filter_cli(cli, filter_opt);
     merge_cli(cli, merge_opt);
     reverse_cli(cli, reverse_opt);
+    select_cli(cli, select_opt);
 }
 
 std::tuple<COMMAND, kmat_opt_t> kmatCli::parse(int argc, char* argv[])
@@ -81,6 +83,10 @@ std::tuple<COMMAND, kmat_opt_t> kmatCli::parse(int argc, char* argv[])
     else if (cli->is("reverse")) {
         this->reverse_opt->inputs = cli->get_positionals();
         return std::make_tuple(COMMAND::REVERSE, this->reverse_opt);
+    }
+    else if (cli->is("select")) {
+        this->select_opt->inputs = cli->get_positionals();
+        return std::make_tuple(COMMAND::SELECT, this->select_opt);
     }
     else {
         return std::make_tuple(COMMAND::UNKNOWN, std::make_shared<struct kmat_options>());
@@ -339,6 +345,29 @@ kmat_opt_t reverse_cli(std::shared_ptr<bc::Parser<1>> cli, reverse_opt_t opt)
          ->action(bc::Action::ShowVersion);
 
     reverse->set_positionals(1, "<input.mat>", "Text-based k-mer matricx");
+
+    return opt;
+}
+
+
+kmat_opt_t select_cli(std::shared_ptr<bc::Parser<1>> cli, select_opt_t opt)
+{
+    bc::cmd_t select = cli->add_command("select", "Select from an input matrix only k-mers that belong to a reference matrix.");
+    
+    select->add_param("-o/--output", "output file. {stdout}")
+         ->meta("FILE")
+         ->def("")
+         ->setter(opt->output);
+
+    select->add_param("-h/--help", "show this message and exit.")
+         ->as_flag()
+         ->action(bc::Action::ShowHelp);
+    
+    select->add_param("-v/--version", "show version and exit.")
+         ->as_flag()
+         ->action(bc::Action::ShowVersion);
+
+    select->set_positionals(2, "<reference.mat> <input.mat>", "Reference and input (sorted) text-based k-mer matrices");
 
     return opt;
 }
