@@ -117,6 +117,7 @@ int main_unitig(unitig_opt_t opt)
     if (opt->write_frac_matrix) {
         frac_ofs.open(frac_file);
         if (!frac_ofs.good()) { throw std::runtime_error(fmt::format("cannot open output file \"{}\" for writing", frac_file)); }
+        frac_ofs << std::fixed << std::setprecision(2);
     }
 
     klibpp::KSeq unitig;
