@@ -98,6 +98,20 @@ static inline void reverse_complement_inplace(std::string &seq) {
 }
 
 
+static inline bool is_canonical(const std::string &seq, bool actg_order=false) {
+
+  auto left = seq.cbegin();
+  for (auto right = seq.crbegin(); right != seq.crend(); ++right) {
+      auto fc = (unsigned char) *left++;
+      auto rc = (unsigned char) rctable[*right++];
+      if (fc != rc) {
+        return actg_order ? (n2kt[fc] < n2kt[rc]) : (fc < rc);
+      }
+  }
+  return true;
+}
+
+
 static size_t get_nb_samples(const std::string_view line, bool skip_first = false) {
   size_t nb_samples{0};
   size_t idx = line.find_first_not_of(" \t");

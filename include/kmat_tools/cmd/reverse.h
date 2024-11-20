@@ -29,7 +29,9 @@ int main_reverse(reverse_opt_t opt)
 
     std::string kmer, line;
     while (reader.read_kmer_and_line(kmer,line)) {
-        kmat::reverse_complement_inplace(kmer);
+        if(!opt->canonicalize || !is_canonical(kmer,opt->actg_order)) {
+            kmat::reverse_complement_inplace(kmer);
+        }
         *fpout << kmer << " " << line << "\n";
     }
 

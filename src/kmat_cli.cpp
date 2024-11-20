@@ -107,7 +107,7 @@ kmat_opt_t convert_cli(std::shared_ptr<bc::Parser<1>> cli, convert_opt_t opt)
         ->as_flag()
         ->setter(opt->ap_flag);
 
-    convert->add_param("-f/--min-frac", "minimum fraction to set presence to 1 (effective with -p). [0.5, 1.0]")
+    convert->add_param("-f/--min-frac", "minimum fraction to set presence to 1 (only effective with -p). [0.5, 1.0]")
         ->meta("FLOAT")
         ->def("0.8")
         ->checker(bc::check::f::range(0.5, 1.0))
@@ -340,6 +340,14 @@ kmat_opt_t reverse_cli(std::shared_ptr<bc::Parser<1>> cli, reverse_opt_t opt)
          ->meta("FILE")
          ->def("")
          ->setter(opt->output);
+
+    reverse->add_param("-c/--canonical", "output canonical sequence instead of reverse complement.")
+         ->as_flag()
+         ->setter(opt->canonicalize);
+
+    reverse->add_param("-z/--actg", "use A<C<T<G order of nucleotides (only effective with -c).")
+         ->as_flag()
+         ->setter(opt->actg_order);
 
     reverse->add_param("-h/--help", "show this message and exit.")
          ->as_flag()

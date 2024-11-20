@@ -7,6 +7,9 @@ namespace kmat {
 struct reverse_options : kmat_options
 {
   std::string output;
+
+  bool actg_order{false};
+  bool canonicalize{false};
 };
 
 using reverse_opt_t = std::shared_ptr<struct reverse_options>;
