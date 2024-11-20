@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
 
     // set_verbosity_level(options->verbosity);
     auto cerr_logger = spdlog::stderr_color_mt("kmat_tools");
-    cerr_logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] %v");
+    cerr_logger->set_pattern("[%Y-%m-%d %H:%M:%S] [%^%l%$] %v");
     spdlog::set_default_logger(cerr_logger);
 
     spdlog::info("Command: {}", cmd_to_str(cmd));
