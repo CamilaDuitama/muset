@@ -359,6 +359,10 @@ kmat_opt_t select_cli(std::shared_ptr<bc::Parser<1>> cli, select_opt_t opt)
          ->def("")
          ->setter(opt->output);
 
+    select->add_param("-z/--actg", "use A<C<T<G order of nucleotides")
+         ->as_flag()
+         ->setter(opt->actg_order);
+
     select->add_param("-h/--help", "show this message and exit.")
          ->as_flag()
          ->action(bc::Action::ShowHelp);
