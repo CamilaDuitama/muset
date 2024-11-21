@@ -179,6 +179,10 @@ int main(int argc, char* argv[])
         muset_opt->filtered_kmers = muset_opt->out_dir/"matrix.filtered.fasta";
         kmat_fasta(muset_opt);
 
+        if(fs::is_empty(muset_opt->filtered_kmers)) {
+            throw std::runtime_error("Filtered k-mer matrix is empty (filters were probably too strict).");
+        }
+
         spdlog::info(fmt::format("Building unitigs"));
         muset_opt->unitigs = muset_opt->out_dir/"unitigs.fa";
         ggcat(muset_opt);
@@ -186,6 +190,10 @@ int main(int argc, char* argv[])
         spdlog::info(fmt::format("Filtering unitigs"));
         muset_opt->filtered_unitigs = muset_opt->out_dir/"unitigs.filtered.fa";
         kmat_fafmt(muset_opt);
+
+        if(fs::is_empty(muset_opt->filtered_unitigs)) {
+            throw std::runtime_error("No unitig retained to build the output matrix (filters were probably too strict).");
+        }
 
         spdlog::info(fmt::format("Building unitig matrix"));
         muset_opt->unitig_prefix = muset_opt->out_dir/"unitigs";
