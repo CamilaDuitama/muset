@@ -70,9 +70,8 @@ int kmat_basic_filter(fs::path input, filter_opt_t opt) {
         }
     }
 
-    spdlog::info(fmt::format("samples: {}", nb_samples));
-    spdlog::info(fmt::format("total k-mers: {}", nb_kmers));
-    spdlog::info(fmt::format("retained k-mers: {}", nb_retained));
+    spdlog::info(fmt::format("{} samples", nb_samples));
+    spdlog::info(fmt::format("{}/{} k-mers retained", nb_retained, nb_kmers));
 
     if(!(opt->output).empty()) {
         ofs.close();
@@ -110,8 +109,9 @@ struct kmtricks_matrix_filter {
         km::MatrixFileAggregator<MAX_K,DMAX_C> mfa(filtered_paths, opts->kmer_size);
         (opts->output).empty() ? mfa.write_as_text(std::cout) : mfa.write_as_text(opts->output);
 
-        spdlog::info(fmt::format("[info] {} total kmers", std::reduce(nb_total_kmers.begin(), nb_total_kmers.end())));
-        spdlog::info(fmt::format("[info] {} retained kmers", std::reduce(nb_retained.begin(), nb_retained.end())));
+        auto retained_kmers = std::reduce(nb_retained.begin(), nb_retained.end());
+        auto total_kmers = std::reduce(nb_total_kmers.begin(), nb_total_kmers.end());
+        spdlog::info(fmt::format("{}/{} kmers retained", retained_kmers, total_kmers));
     }
 };
 
@@ -130,7 +130,7 @@ int main_filter(filter_opt_t opt)
     }
 
     if (is_txt_input) {
-        spdlog::info(fmt::format("filtering text matrix: {}", input.c_str()));
+        spdlog::debug(fmt::format("filtering text matrix: {}", input.c_str()));
         return kmat_basic_filter(input, opt);
     }
 
@@ -140,7 +140,7 @@ int main_filter(filter_opt_t opt)
     opt->matrices_dir = kmtricks_dir/"matrices";
     opt->filtered_dir = kmtricks_dir/"matrices_filtered";
 
-    spdlog::info(fmt::format("filtering kmtricks matrix: {}", kmtricks_dir.c_str()));
+    spdlog::debug(fmt::format("filtering kmtricks matrix: {}", kmtricks_dir.c_str()));
 
     // empty kmtricks matrix
     if (fs::is_empty(opt->matrices_dir)) {

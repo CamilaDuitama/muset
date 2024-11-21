@@ -6,7 +6,6 @@ namespace kmat {
 
 struct fasta_options : kmat_options
 {
-  std::string input;
   std::string output;
 };
 

@@ -607,9 +607,9 @@ public:
       exec_format();
 
     end:
-      spdlog::info("Done in {} - Peak RSS -> {:.2f} MB.",
-                   whole_time.formatted(),
-                   get_peak_rss() * 0.0009765625);
+      // spdlog::info("Done in {} - Peak RSS -> {:.2f} MB.",
+      //              whole_time.formatted(),
+      //              get_peak_rss() * 0.0009765625);
 
     std::ofstream out_infos(KmDir::get().m_run_infos, std::ios::out);
     check_fstream_good(KmDir::get().m_run_infos, out_infos);

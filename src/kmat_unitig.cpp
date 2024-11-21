@@ -167,7 +167,7 @@ kmat_opt_t unitig_cli(std::shared_ptr<bc::Parser<1>> cli, unitig_opt_t opt)
         ->def("out")
         ->setter(opt->prefix);
 
-    unitig->add_param("-f/--min-frac", "set average abundance to 0 if k-mer fraction is below this threshold [0,1].")
+    unitig->add_param("-f/--min-frac", "set unitig average abundance to 0 if its k-mer fraction is below this threshold [0,1].")
         ->meta("FLOAT")
         ->def("0.0")
         ->checker(bc::check::f::range(0.0, 1.0))

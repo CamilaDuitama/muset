@@ -212,7 +212,10 @@ add_dependencies(kmat_tools-cpp ${deps})
 # muset cpp executable
 
 set(muset_sources
+    src/kmat_fafmt.cpp
+    src/kmat_fasta.cpp
     src/kmat_filter.cpp
+    src/kmat_unitig.cpp
     src/muset_cli.cpp
     src/muset.cpp
 )

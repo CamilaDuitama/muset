@@ -61,98 +61,112 @@ muset_options_t muset_cli(std::shared_ptr<bc::Parser<0>> cli, muset_options_t op
        ->setter(options->fof);
 
     cli->add_param("-i/--in-matrix", "input text matrix.")
-       ->meta("FILE")
-       ->def("")
-       ->setter(options->in_matrix);
+        ->meta("FILE")
+        ->def("")
+        ->setter(options->in_matrix);
 
     cli->add_param("-o/--output", "output directory.")
-       ->meta("DIR")
-       ->def("output")
-       ->checker(dir_already_exists)
-       ->setter(options->out_dir);
+        ->meta("DIR")
+        ->def("output")
+        ->checker(dir_already_exists)
+        ->setter(options->out_dir);
 
     cli->add_param("-k/--kmer-size", "k-mer size. [8, 63].")
-       ->meta("INT")
-       ->def("31")
-       ->checker(bc::check::f::range(8, 63))
-       ->setter(options->kmer_size);
+        ->meta("INT")
+        ->def("31")
+        ->checker(bc::check::f::range(8, 63))
+        ->setter(options->kmer_size);
 
     cli->add_param("-m/--mini-size", "minimizer size. [4, 15].")
-       ->meta("INT")
-       ->def("15")
-       ->checker(bc::check::f::range(4, 15))
-       ->setter(options->mini_size);
+        ->meta("INT")
+        ->def("15")
+        ->checker(bc::check::f::range(4, 15))
+        ->setter(options->mini_size);
 
     cli->add_param("-a/--min-abundance", "min abundance to keep a k-mer.")
-       ->meta("INT")
-       ->def("2")
-       ->checker(bc::check::is_number)
-       ->setter(options->min_abundance);
+        ->meta("INT")
+        ->def("2")
+        ->checker(bc::check::is_number)
+        ->setter(options->min_abundance);
 
-    cli->add_param("-l/--min-unitig-length", "min length to keep a unitig in the output matrix.")
-       ->meta("INT")
-       ->def("2k-1")
-       ->callback([options](){ options->min_utg_len_set = true; });
+    cli->add_param("-l/--min-unitig-length", "min unitig length.")
+        ->meta("INT")
+        ->def("2k-1")
+        ->callback([options](){ options->min_utg_len_set = true; });
+
+    cli->add_param("-r/--min-utg-frac", "set unitig average abundance to 0 if its k-mer fraction is below this threshold [0,1].")
+        ->meta("FLOAT")
+        ->def("0.0")
+        ->checker(bc::check::f::range(0.0, 1.0))
+        ->setter(options->min_utg_frac);
+
+    cli->add_param("-s/--write-seq", "write the unitig sequence instead of the identifier in the output matrix")
+        ->as_flag()
+        ->setter(options->write_utg_seq);
+
+    cli->add_param("--out-frac", "output an additional matrix containing k-mer fractions.")
+        ->as_flag()
+        ->setter(options->write_frac_matrix);
 
     cli->add_param("-u/--logan", "input samples consist of Logan unitigs (i.e., with abundance).")
-       ->as_flag()
-       ->setter(options->logan);
+        ->as_flag()
+        ->setter(options->logan);
 
     /*** FILTERING OPTIONS ***/
     
     cli->add_group("filtering options", "");
 
-    cli->add_param("--no-kmer-filter", "disable filtering of k-mer matrix rows before unitig construction.")
-       ->as_flag()
-       ->setter(options->no_kmer_filter);
+   //  cli->add_param("--no-kmer-filter", "disable filtering of k-mer matrix rows before unitig construction.")
+   //     ->as_flag()
+   //     ->setter(options->no_kmer_filter);
 
     cli->add_param("-f/--min-frac-absent", "fraction of samples from which a k-mer should be absent. [0.0, 1.0]")
-       ->meta("FLOAT")
-       ->def("0.1")
-       ->checker(bc::check::f::range(0.0, 1.0))
-       ->setter(options->min_frac_absent);
+        ->meta("FLOAT")
+        ->def("0.1")
+        ->checker(bc::check::f::range(0.0, 1.0))
+        ->setter(options->min_frac_absent);
 
     cli->add_param("-F/--min-frac-present", "fraction of samples in which a k-mer should be present. [0.0, 1.0]")
-       ->meta("FLOAT")
-       ->def("0.1")
-       ->checker(bc::check::f::range(0.0, 1.0))
-       ->setter(options->min_frac_present);
+        ->meta("FLOAT")
+        ->def("0.1")
+        ->checker(bc::check::f::range(0.0, 1.0))
+        ->setter(options->min_frac_present);
 
     cli->add_param("-n/--min-nb-absent", "minimum number of samples from which a k-mer should be absent (overrides -f).")
-       ->meta("FLOAT")
-       ->def("0")
-       ->checker(bc::check::is_number)
-       ->setter(options->min_nb_absent)
-       ->callback([options](){ options->min_nb_absent_set = true; });
+        ->meta("FLOAT")
+        ->def("0")
+        ->checker(bc::check::is_number)
+        ->setter(options->min_nb_absent)
+        ->callback([options](){ options->min_nb_absent_set = true; });
 
     cli->add_param("-N/--min-nb-present", "minimum number of samples in which a k-mer should be present (overrides -F).")
-       ->meta("FLOAT")
-       ->def("0")
-       ->checker(bc::check::is_number)
-       ->setter(options->min_nb_present)
-       ->callback([options](){ options->min_nb_present_set = true; });
+        ->meta("FLOAT")
+        ->def("0")
+        ->checker(bc::check::is_number)
+        ->setter(options->min_nb_present)
+        ->callback([options](){ options->min_nb_present_set = true; });
 
     /*** OTHER OPTIONS ***/
 
     cli->add_group("other options", "");
 
     cli->add_param("--keep-tmp", "keep temporary files.")
-       ->as_flag()
-       ->setter(options->keep_tmp);
+        ->as_flag()
+        ->setter(options->keep_tmp);
 
     cli->add_param("-t/--threads", "number of threads.")
-       ->meta("INT")
-       ->def("4")
-       ->checker(bc::check::is_number)
-       ->setter(options->nb_threads);
+        ->meta("INT")
+        ->def("4")
+        ->checker(bc::check::is_number)
+        ->setter(options->nb_threads);
 
     cli->add_param("-h/--help", "show this message and exit.")
-       ->as_flag()
-       ->action(bc::Action::ShowHelp);
+        ->as_flag()
+        ->action(bc::Action::ShowHelp);
     
     cli->add_param("-v/--version", "show version and exit.")
-       ->as_flag()
-       ->action(bc::Action::ShowVersion);
+        ->as_flag()
+        ->action(bc::Action::ShowVersion);
     
     // cli->add_param("--verbose", "verbosity level [debug|info|warning|error].")
     //    ->meta("STR")
