@@ -12,7 +12,7 @@
 #include <kseq++/seqio.hpp>
 #include "../external/sshash/dictionary.hpp"
 
-#include <kmat_tools/cli.h>
+#include <kmat_tools/cmd/unitig.h>
 #include <kmat_tools/matrix.h>
 #include <kmat_tools/task.h>
 #include <kmat_tools/utils.h>
