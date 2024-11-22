@@ -66,25 +66,19 @@ muset_options_t muset_cli(std::shared_ptr<bc::Parser<0>> cli, muset_options_t op
         ->checker(bc::check::f::range(8, 63))
         ->setter(options->kmer_size);
 
-    cli->add_param("-m/--mini-size", "minimizer size. [4, 15].")
-        ->meta("INT")
-        ->def("15")
-        ->checker(bc::check::f::range(4, 15))
-        ->setter(options->mini_size);
-
-    cli->add_param("-a/--min-abundance", "min abundance to keep a k-mer.")
+    cli->add_param("-a/--min-abundance", "minimum abundance to keep a k-mer.")
         ->meta("INT")
         ->def("2")
         ->checker(bc::check::is_number)
         ->setter(options->min_abundance);
 
-    cli->add_param("-l/--min-unitig-length", "min unitig length.")
+    cli->add_param("-l/--min-unitig-length", "minimum unitig length.")
         ->meta("INT")
         ->def("2k-1")
         ->setter(options->min_utg_len)
         ->callback([options](){ options->min_utg_len_set = true; });
 
-    cli->add_param("-r/--min-utg-frac", "set unitig average abundance to 0 if its k-mer fraction is below this threshold [0,1].")
+    cli->add_param("-r/--min-utg-frac", "minimum k-mer fraction to set unitig average abundance [0,1].")
         ->meta("FLOAT")
         ->def("0.0")
         ->checker(bc::check::f::range(0.0, 1.0))
@@ -101,6 +95,12 @@ muset_options_t muset_cli(std::shared_ptr<bc::Parser<0>> cli, muset_options_t op
     cli->add_param("-u/--logan", "input samples consist of Logan unitigs (i.e., with abundance).")
         ->as_flag()
         ->setter(options->logan);
+
+    cli->add_param("-m/--mini-size", "minimizer size. [4, 15].")
+        ->meta("INT")
+        ->def("15")
+        ->checker(bc::check::f::range(4, 15))
+        ->setter(options->mini_size);
 
     /*** FILTERING OPTIONS ***/
     
@@ -140,7 +140,7 @@ muset_options_t muset_cli(std::shared_ptr<bc::Parser<0>> cli, muset_options_t op
 
     cli->add_group("other options", "");
 
-    cli->add_param("--keep-tmp", "keep temporary files.")
+    cli->add_param("--keep-temp", "keep temporary files.")
         ->as_flag()
         ->setter(options->keep_tmp);
 
