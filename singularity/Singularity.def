@@ -46,3 +46,4 @@ From: ubuntu:22.04
     command -v ggcat
     command -v kmat_tools
     command -v muset
+    command -v muset_pa
