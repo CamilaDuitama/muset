@@ -71,6 +71,8 @@ int main_convert(convert_opt_t opt)
     }
     colorDumpFile.close();
 
+    spdlog::info("building unitig matrix");
+
     uint64_t num_colors {color_names.size()-1};
     std::vector<float> presence_values(num_colors, 0);  // Vector to store the values of "x"
 
@@ -145,6 +147,7 @@ int main_convert(convert_opt_t opt)
     colorQueryFile.close();
     if(!(opt->out_fname).empty()) {
         ofs.close();
+        spdlog::info(fmt::format("presence-absence unitig matrix written to \"{}\"", (opt->out_fname).c_str()));
     }
 
     return 0;
