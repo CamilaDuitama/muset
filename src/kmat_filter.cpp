@@ -130,7 +130,7 @@ int main_filter(filter_opt_t opt)
     }
 
     if (is_txt_input) {
-        spdlog::debug(fmt::format("filtering text matrix: {}", input.c_str()));
+        spdlog::info(fmt::format("filtering text matrix: {}", input.c_str()));
         return kmat_basic_filter(input, opt);
     }
 
@@ -140,7 +140,7 @@ int main_filter(filter_opt_t opt)
     opt->matrices_dir = kmtricks_dir/"matrices";
     opt->filtered_dir = kmtricks_dir/"matrices_filtered";
 
-    spdlog::debug(fmt::format("filtering kmtricks matrix: {}", kmtricks_dir.c_str()));
+    spdlog::info(fmt::format("filtering kmtricks matrix: {}", kmtricks_dir.c_str()));
 
     // empty kmtricks matrix
     if (fs::is_empty(opt->matrices_dir)) {
