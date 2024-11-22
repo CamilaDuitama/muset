@@ -41,7 +41,7 @@ void print_options(muset::muset_pa_options_t opt) {
     spdlog::info(fmt::format("k-mer size (-k): {}", opt->kmer_size));
     spdlog::info(fmt::format("minimum abundance (-a): {}", opt->min_abundance));
     spdlog::info(fmt::format("minimum unitig length (-l): {}", opt->min_utg_len));
-    spdlog::info(fmt::format("minimum unitig fraction set: {}", opt->min_utg_frac_set));
+    spdlog::info(fmt::format("minimum unitig fraction set (-r): {}", opt->min_utg_frac_set));
     if(opt->min_utg_frac_set) { spdlog::info(fmt::format("minimum unitig fraction (-r): {}", opt->min_utg_frac)); }
     spdlog::info(fmt::format("write unitig sequence (-s): {}", opt->write_utg_seq));
     spdlog::info(fmt::format("minimizer size (-m): {}", opt->mini_size));
