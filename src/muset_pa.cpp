@@ -158,10 +158,19 @@ int main(int argc, char* argv[])
             opt->min_utg_len = 2 * opt->kmer_size - 1;
         }
 
+        // create main output directory
         fs::create_directories(opt->out_dir);
 
         // initialize the logger just before running the pipeline
         init_logger(opt->out_dir);
+
+        // print values of main options
+        spdlog::info(fmt::format("Running muset_pa {}", PROJECT_VER));
+        spdlog::info("---------------");
+        print_options(opt);
+        spdlog::info("---------------");
+
+        // muset_pa pipeline
 
         spdlog::info(fmt::format("Building unitigs"));
         opt->unitigs = opt->out_dir/"unitigs";
