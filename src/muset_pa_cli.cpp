@@ -54,7 +54,6 @@ muset_pa_options_t muset_pa_cli(muset_pa_cli_t cli, muset_pa_options_t options) 
     cli->add_param("-o/--out-dir", "output directory.")
         ->meta("DIR")
         ->def("output_pa")
-        ->checker(dir_already_exists)
         ->setter(options->out_dir);
 
     cli->add_param("-k/--kmer-size", "k-mer size. [8, 63].")
