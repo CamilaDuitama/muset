@@ -126,7 +126,7 @@ int main_filter(filter_opt_t opt)
     bool is_dir_input = !is_txt_input && is_kmtricks_dir(input);
 
     if(!is_txt_input && !is_dir_input) {
-        throw std::runtime_error(fmt::format("input is not a file nor a valid kmtricks directory"));
+        throw std::runtime_error(fmt::format("input is neither a file nor a valid kmtricks directory"));
     }
 
     if (is_txt_input) {

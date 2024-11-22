@@ -26,7 +26,7 @@ int main_convert(convert_opt_t opt)
     using json = nlohmann::json;
 
     if (opt->min_frac_set && !opt->ap_flag){
-        spdlog::warn("Minimum fraction (-f) was set without option -p. Option -f will be unused.");
+        spdlog::warn("Minimum fraction (-f) was set without option -p. Option -f will not be used.");
     } 
 
     // Get the input and output filenames from the arguments and check that the input file exist.
@@ -49,7 +49,7 @@ int main_convert(convert_opt_t opt)
     
     std::vector<std::string> color_names;  // Vector to store the values of "x"
     std::string line;
-    color_names.push_back("Unitigs_id");
+    color_names.push_back("UnitigID");
     
     // Parse the color dump file and get the names of the colors (to output in the heades of the csv)
     std::ifstream colorDumpFile(color_dump_Filename);
@@ -72,11 +72,7 @@ int main_convert(convert_opt_t opt)
     colorDumpFile.close();
 
     uint64_t num_colors {color_names.size()-1};
-    std::vector<int> keys(num_colors) ;
-    std::iota (std::begin(keys), std::end(keys), 0); // Fill with 0, 1, ..., color_names.size().
-
     std::vector<float> presence_values(num_colors, 0);  // Vector to store the values of "x"
-    std::string csv_line;
 
     std::ostream* fpout = &std::cout;
     std::ofstream ofs;
@@ -111,7 +107,7 @@ int main_convert(convert_opt_t opt)
             // Parse the line as a JSON object
             json jsonObj = json::parse(line);
 
-            std::fill(presence_values.begin(), presence_values.end(), 0);;  // Vector to store the values of "x"
+            std::fill(presence_values.begin(), presence_values.end(), 0);  // Vector to store the values of "x"
             // Check if the key "x" exists and is an object
             if (jsonObj.contains("matches") && jsonObj["matches"].is_object()) {
                 json nestedObj = jsonObj["matches"];
@@ -139,7 +135,7 @@ int main_convert(convert_opt_t opt)
                 *fpout << "\n";
             }
         } catch (json::parse_error& e) {
-            spdlog::error("Error while readins ggcat output. Check that the format is correct.");
+            spdlog::error("Error reading ggcat files. Check that the format is correct.");
             spdlog::error(e.what());
             std::exit(EXIT_FAILURE);
         }

@@ -2,7 +2,6 @@
 #include <kmtricks/utils.hpp>
 #include <fmt/format.h>
 
-#include "common.h"
 #include "muset_cli.h"
 
 namespace fs = std::filesystem;
@@ -10,7 +9,7 @@ namespace muset {
 
 musetCli::musetCli(const std::string& name, const std::string& desc, const std::string& version, const std::string& authors) {
     cli = std::make_shared<bc::Parser<0>>(name, desc, version, authors);
-    muset_opt = std::make_shared<struct muset_options>(muset_options{});
+    muset_opt = std::make_shared<struct muset_options>();
     muset_cli(cli, muset_opt);
 }
 
@@ -41,15 +40,6 @@ auto dir_already_exists = [](const std::string& p, const std::string& v) {
   return std::make_tuple(exists, bc::utils::format_error(p, v, "Directory already exists!"));
 };
 
-auto is_km_dir = [](const std::string& p, const std::string& v) -> bc::check::checker_ret_t {
-  std::string c1 = fmt::format("{}/{}", v, "kmtricks.fof");
-  std::string c2 = fmt::format("{}/{}", v, "run_infos.txt");
-  return std::make_tuple(
-    fs::is_regular_file(c1) && fs::is_regular_file(c2),
-    bc::utils::format_error(p, v, "Not a kmtricks directory!")
-  );
-};
-
 
 muset_options_t muset_cli(std::shared_ptr<bc::Parser<0>> cli, muset_options_t options) {
 
@@ -68,7 +58,6 @@ muset_options_t muset_cli(std::shared_ptr<bc::Parser<0>> cli, muset_options_t op
     cli->add_param("-o/--output", "output directory.")
         ->meta("DIR")
         ->def("output")
-        ->checker(dir_already_exists)
         ->setter(options->out_dir);
 
     cli->add_param("-k/--kmer-size", "k-mer size. [8, 63].")
@@ -92,6 +81,7 @@ muset_options_t muset_cli(std::shared_ptr<bc::Parser<0>> cli, muset_options_t op
     cli->add_param("-l/--min-unitig-length", "min unitig length.")
         ->meta("INT")
         ->def("2k-1")
+        ->setter(options->min_utg_len)
         ->callback([options](){ options->min_utg_len_set = true; });
 
     cli->add_param("-r/--min-utg-frac", "set unitig average abundance to 0 if its k-mer fraction is below this threshold [0,1].")

@@ -10,6 +10,8 @@
 #include <kmtricks/exceptions.hpp>
 #include <kmtricks/utils.hpp>
 
+#include <kmat_tools/utils.h>
+
 #define RECORD(ss, var) ss << #var << "=" << var << ", "
 
 namespace fs = std::filesystem;
@@ -26,6 +28,7 @@ struct muset_options
     fs::path fof;
     fs::path in_matrix;
     fs::path out_dir;
+    fs::path kmer_matrix; // set after kmtricks or providing input matrix
 
     uint32_t kmer_size{0};
     uint32_t mini_size{0};
@@ -50,17 +53,18 @@ struct muset_options
 
     int nb_threads{1};
 
-    // intermediate files, not actual input parameters
+    // intermediate (temporary) files, defined along the pipeline
 
-    fs::path kmer_matrix;
     fs::path filtered_matrix;
     fs::path filtered_kmers;
     fs::path unitigs;
+
+    // part of the output
     fs::path filtered_unitigs;
     fs::path unitig_prefix;
 
-    void sanity_check()
-    {
+
+    void sanity_check() {
         // check input-file parameters
         if (in_matrix.empty() && fof.empty()) {
             throw std::runtime_error("either --file or --in-matrix should be provided");
@@ -72,9 +76,9 @@ struct muset_options
         if (!fof.empty() && (!fs::is_regular_file(fof) || fs::is_empty(fof))) {
             throw std::runtime_error(fmt::format("input file \"{}\" does not exist", fof.c_str()));
         }
-        if (!in_matrix.empty() && (!fs::is_regular_file(in_matrix) || fs::is_empty(in_matrix))) {
-            throw std::runtime_error(fmt::format("input matrix \"{}\" is not a file or is empty", in_matrix.c_str()));
-        }
+        // if (!in_matrix.empty() && (!fs::is_regular_file(in_matrix) || fs::is_empty(in_matrix))) {
+        //     throw std::runtime_error(fmt::format("input matrix \"{}\" is not a file or is empty", in_matrix.c_str()));
+        // }
         
         // --logan flag only valid for kmer-size equal to 31
         if ((logan) && (kmer_size != 31)) {
@@ -83,6 +87,14 @@ struct muset_options
 
         if (mini_size >= kmer_size) {
             throw std::runtime_error("minimizer size must be smaller than k-mer size");
+        }
+    }
+
+    void remove_temp_files() {
+        if(!keep_tmp) {
+            kmat::remove_file(filtered_matrix);
+            kmat::remove_file(filtered_kmers);
+            kmat::remove_file(unitigs);
         }
     }
 };

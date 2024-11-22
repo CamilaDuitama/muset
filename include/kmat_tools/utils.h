@@ -144,6 +144,14 @@ static inline bool is_kmtricks_dir(const fs::path& dir) {
 };
 
 
+static inline bool remove_file(const fs::path& path) {
+  if(!path.empty() && fs::is_regular_file(path)) {
+    fs::remove(path);
+  }
+  return false;
+}
+
+
 // https://locklessinc.com/articles/sat_arithmetic/
 template<typename T, class = typename std::enable_if<std::is_unsigned_v<T>>::type>
 inline T add_sat(T a, T b) noexcept {

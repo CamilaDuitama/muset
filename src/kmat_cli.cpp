@@ -107,10 +107,10 @@ kmat_opt_t convert_cli(std::shared_ptr<bc::Parser<1>> cli, convert_opt_t opt)
         ->as_flag()
         ->setter(opt->ap_flag);
 
-    convert->add_param("-f/--min-frac", "minimum fraction to set presence to 1 (only effective with -p). [0.5, 1.0]")
+    convert->add_param("-f/--min-frac", "set presence to 1 when k-mer fraction is above this threshold (effective with -p). [0,1]")
         ->meta("FLOAT")
         ->def("0.8")
-        ->checker(bc::check::f::range(0.5, 1.0))
+        ->checker(bc::check::f::range(0.0, 1.0))
         ->setter(opt->min_frac)
         ->callback([opt](){ opt->min_frac_set = true; });
 

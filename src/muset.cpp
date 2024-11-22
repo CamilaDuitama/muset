@@ -4,10 +4,14 @@
 #include <memory>
 #include <sstream>
 
+#include <fmt/format.h>
+
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/basic_file_sink.h>
 
 #include <kmtricks/cmd.hpp>
+#include <kmtricks/kmdir.hpp>
 #include <kmtricks/loop_executor.hpp>
 
 #include <kmat_tools/cmd/fafmt.h>
@@ -15,8 +19,26 @@
 #include <kmat_tools/cmd/filter.h>
 #include <kmat_tools/cmd/unitig.h>
 #include <kmat_tools/matrix.h>
+#include <kmat_tools/utils.h>
 
 #include "muset_cli.h"
+
+
+void init_logger() {
+    auto cerr_sink = std::make_shared<spdlog::sinks::stderr_color_sink_mt>(); // spdlog::stderr_color_mt("muset");
+    cerr_sink->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] %v");
+
+    auto now = std::chrono::system_clock::now();
+    auto local_time = std::chrono::system_clock::to_time_t(now);
+    std::stringstream ss; ss << std::put_time(std::localtime(&local_time), "%Y%m%d_%H%M%S");
+    auto muset_log = fmt::format("muset_{}.log", ss.str());
+    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(muset_log, true);
+    file_sink->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] %v");
+    // file_sink->set_level(spdlog::level::info);
+
+    auto combined_logger = std::make_shared<spdlog::logger>("muset", spdlog::sinks_init_list({cerr_sink,file_sink}));
+    spdlog::set_default_logger(combined_logger);
+}
 
 
 void kmtricks_pipeline(muset::muset_options_t muset_opt) {
@@ -85,22 +107,21 @@ void kmat_fasta(muset::muset_options_t muset_opt) {
 }
 
 void ggcat(muset::muset_options_t muset_opt) {
-
-    auto fasta_opt = std::make_shared<kmat::fasta_options>();
-    fasta_opt->output = muset_opt->filtered_kmers;
-    (fasta_opt->inputs).push_back(muset_opt->filtered_matrix);
-
+    std::string ggcat_keeptmp = muset_opt->keep_tmp ? "--keep-temp-files" : "";
+    std::string ggcat_tempdir = muset_opt->out_dir/"ggcat_build_temp";
     std::string ggcat_logfile = muset_opt->out_dir/"ggcat.log";
-    std::string ggcat_cmd = fmt::format("ggcat build -j {} -k {} -s 1 -o {} {} &> {}",
+    std::string ggcat_cmd = fmt::format("ggcat build -j {} -k {} -s 1 -o {} {} --temp-dir {} {} &> {}",
         muset_opt->nb_threads, muset_opt->kmer_size,
         (muset_opt->unitigs).c_str(),
+        ggcat_keeptmp, // --keep-temp-files ?
+        ggcat_tempdir, // --temp-dir
         (muset_opt->filtered_kmers).c_str(),
         ggcat_logfile);
 
     spdlog::debug(fmt::format("Running command: {}", ggcat_cmd));    
     auto ret = std::system(ggcat_cmd.c_str());
     if(ret != 0) {
-        throw std::runtime_error(fmt::format("Command failed: {}\nSee log at {}", ggcat_cmd));
+        throw std::runtime_error(fmt::format("Command failed: {}\nSee log at {}", ggcat_cmd, ggcat_logfile));
     }
 }
 
@@ -135,10 +156,7 @@ void kmat_unitig(muset::muset_options_t muset_opt) {
 int main(int argc, char* argv[])
 {
     muset::musetCli cli("muset", "a pipeline for building an abundance unitig matrix from a list of FASTA/FASTQ files.", PROJECT_VER, "");
-
-    auto cerr_logger = spdlog::stderr_color_mt("muset");
-    cerr_logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] %v");
-    spdlog::set_default_logger(cerr_logger);
+    auto muset_opt = cli.parse(argc, argv);
 
     try
     {
@@ -147,28 +165,56 @@ int main(int argc, char* argv[])
             throw std::runtime_error("ggcat: command not found");
         }
 
-        auto muset_opt = cli.parse(argc, argv);
+        // check parameters consistency
         muset_opt->sanity_check();
         
         if (!muset_opt->min_utg_len_set) {
             muset_opt->min_utg_len = 2 * muset_opt->kmer_size - 1;
         }
 
+        // initialize the logger just before running the pipeline
+        spdlog::info(fmt::format("Running muset {}", PROJECT_VER));
+
+        init_logger();
+
+        // muset pipeline
+
         if(!muset_opt->fof.empty()) {
+            if(fs::is_directory(muset_opt->out_dir)) {
+                throw std::runtime_error(fmt::format("kmtricks output directory \"{}\" already exists.", (muset_opt->out_dir).c_str()));
+            }
+            // create kmtricks matrix
             spdlog::info("Building k-mer matrix with kmtricks");
             kmtricks_pipeline(muset_opt);
             muset_opt->kmer_matrix = muset_opt->out_dir;
         } else {
-            spdlog::info(fmt::format("Using input k-mer matrix: {}", (muset_opt->in_matrix).c_str()));
-            
-            std::string kmer; kmat::TextMatrixReader mat(muset_opt->in_matrix);
-            if (!mat.read_kmer(kmer)) {
-                throw std::runtime_error("Empty input matrix");
+            // use an input text matrix or a previous kmtricks directory
+            spdlog::info(fmt::format("Using k-mer matrix: {}", (muset_opt->in_matrix).c_str()));
+            bool is_txt_input = fs::is_regular_file(muset_opt->in_matrix);
+            // text matrix
+            if(is_txt_input) {
+                std::string kmer; kmat::TextMatrixReader mat(muset_opt->in_matrix);
+                if (!mat.read_kmer(kmer)) {
+                    throw std::runtime_error("Empty input matrix");
+                }
+                muset_opt->kmer_size = kmer.size();
+                spdlog::debug(fmt::format("input matrix k-mer size: {}", muset_opt->kmer_size));
+                fs::create_directories(muset_opt->out_dir);
+                muset_opt->kmer_matrix = muset_opt->in_matrix;
             }
-            muset_opt->kmer_size = kmer.size();
-            spdlog::debug(fmt::format("input matrix k-mer size: {}", muset_opt->kmer_size));
-            fs::create_directories(muset_opt->out_dir);
-            muset_opt->kmer_matrix = muset_opt->in_matrix;
+            // kmtricks directory
+            else if(!is_txt_input && kmat::is_kmtricks_dir(muset_opt->in_matrix)) {
+                km::KmDir::get().init(muset_opt->in_matrix, "", false);
+                Storage* config_storage = StorageFactory(STORAGE_FILE).load(km::KmDir::get().m_config_storage);
+                LOCAL(config_storage);
+                Configuration config = Configuration();
+                config.load(config_storage->getGroup("gatb"));
+                muset_opt->kmer_size = config._kmerSize;
+            }
+            else {
+                throw std::runtime_error(fmt::format("input is neither a text file nor a valid kmtricks directory"));
+            }
+            
         }
 
         spdlog::info(fmt::format("Filtering k-mer matrix"));
@@ -180,24 +226,29 @@ int main(int argc, char* argv[])
         kmat_fasta(muset_opt);
 
         if(fs::is_empty(muset_opt->filtered_kmers)) {
+            muset_opt->remove_temp_files();
             throw std::runtime_error("Filtered k-mer matrix is empty (filters were probably too strict).");
         }
 
         spdlog::info(fmt::format("Building unitigs"));
-        muset_opt->unitigs = muset_opt->out_dir/"unitigs.fa";
+        muset_opt->unitigs = muset_opt->out_dir/"unitigs";
         ggcat(muset_opt);
 
         spdlog::info(fmt::format("Filtering unitigs"));
-        muset_opt->filtered_unitigs = muset_opt->out_dir/"unitigs.filtered.fa";
+        muset_opt->filtered_unitigs = muset_opt->out_dir/"unitigs.fa";
         kmat_fafmt(muset_opt);
 
         if(fs::is_empty(muset_opt->filtered_unitigs)) {
+            muset_opt->remove_temp_files();
             throw std::runtime_error("No unitig retained to build the output matrix (filters were probably too strict).");
         }
 
         spdlog::info(fmt::format("Building unitig matrix"));
         muset_opt->unitig_prefix = muset_opt->out_dir/"unitigs";
         kmat_unitig(muset_opt);
+
+        spdlog::debug(fmt::format("Removing temporary files"));
+        muset_opt->remove_temp_files();
     }
     catch (const km::km_exception& e) {
         spdlog::error("{} - {}", e.get_name(), e.get_msg());

@@ -164,29 +164,6 @@ message(STATUS "Executables output directory: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
 ############################################################
 # kmat_tools executable
 
-# set(kmat_tools_sources
-#   src/km_basic_filter.cpp
-#   src/km_convert.cpp
-#   src/km_diff.cpp
-#   src/km_fafmt.cpp
-#   src/km_fasta.cpp
-#   src/km_ktfilter.cpp
-#   src/km_merge.cpp
-#   src/km_reverse.cpp
-#   src/km_select.cpp
-#   src/km_tools.cpp
-#   src/km_unitig.cpp
-# )
-
-# add_executable(kmat_tools ${kmat_tools_sources})
-
-# target_compile_definitions(kmat_tools PRIVATE DMAX_C=${MAX_C})
-# target_include_directories(kmat_tools PRIVATE ${includes})
-# target_link_libraries(kmat_tools ${deps_libs})
-# add_dependencies(kmat_tools ${deps})
-
-# C++ version
-
 set(kmat_tools_cpp_sources
     src/kmat_convert.cpp
     src/kmat_diff.cpp
@@ -226,3 +203,20 @@ target_compile_definitions(muset-cpp PRIVATE DMAX_C=${MAX_C})
 target_include_directories(muset-cpp PRIVATE ${includes})
 target_link_libraries(muset-cpp ${deps_libs})
 add_dependencies(muset-cpp ${deps})
+
+############################################################
+# muset_pa cpp executable
+
+set(muset_sources
+    src/kmat_convert.cpp
+    src/kmat_fafmt.cpp
+    src/muset_pa_cli.cpp
+    src/muset_pa.cpp
+)
+
+add_executable(muset_pa-cpp ${muset_sources})
+
+target_compile_definitions(muset_pa-cpp PRIVATE DMAX_C=${MAX_C})
+target_include_directories(muset_pa-cpp PRIVATE ${includes})
+target_link_libraries(muset_pa-cpp ${deps_libs})
+add_dependencies(muset_pa-cpp ${deps})
