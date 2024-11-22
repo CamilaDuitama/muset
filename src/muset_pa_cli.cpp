@@ -46,23 +46,22 @@ muset_pa_options_t muset_pa_cli(muset_pa_cli_t cli, muset_pa_options_t options) 
 
     cli->add_group("main options", "");
 
-    cli->add_param("--file", "kmtricks-like input file, see README.md.")
+    cli->add_param("--file", "list of FASTA/Q files, one per line (see README.md).")
        ->meta("FILE")
        ->def("")
-       ->checker(file_exists)
        ->setter(options->fof);
+
+    cli->add_param("-o/--out-dir", "output directory.")
+        ->meta("DIR")
+        ->def("output_pa")
+        ->checker(dir_already_exists)
+        ->setter(options->out_dir);
 
     cli->add_param("-k/--kmer-size", "k-mer size. [8, 63].")
         ->meta("INT")
         ->def("31")
         ->checker(bc::check::f::range(8, 63))
         ->setter(options->kmer_size);
-
-    cli->add_param("-o/--output", "output directory.")
-        ->meta("DIR")
-        ->def("output_pa")
-        ->checker(dir_already_exists)
-        ->setter(options->out_dir);
 
     cli->add_param("-a/--min-abundance", "minimum abundance required to keep a kmer.")
         ->meta("INT")
@@ -76,7 +75,7 @@ muset_pa_options_t muset_pa_cli(muset_pa_cli_t cli, muset_pa_options_t options) 
         ->setter(options->min_utg_len)
         ->callback([options](){ options->min_utg_len_set = true; });
 
-    cli->add_param("-r/--min-utg-frac", "output a binary matrix, using this minimum treshold to set a unitig as present (1) in a sample [0,1].")
+    cli->add_param("-r/--min-utg-frac", "output a binary matrix; sets a unitig as present (1) when fraction is greater than this threshold [0,1].")
         ->meta("FLOAT")
         ->def("0.8")
         ->checker(bc::check::f::range(0.0, 1.0))
@@ -97,9 +96,9 @@ muset_pa_options_t muset_pa_cli(muset_pa_cli_t cli, muset_pa_options_t options) 
 
     cli->add_group("other options", "");
 
-    cli->add_param("--keep-tmp", "keep temporary files.")
-        ->as_flag()
-        ->setter(options->keep_tmp);
+    // cli->add_param("--keep-temp", "keep temporary files.")
+    //     ->as_flag()
+    //     ->setter(options->keep_tmp);
 
     cli->add_param("-t/--threads", "number of threads.")
         ->meta("INT")

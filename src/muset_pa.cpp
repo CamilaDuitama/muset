@@ -5,9 +5,9 @@
 #include <sstream>
 
 #include <fmt/format.h>
-
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/basic_file_sink.h>
 
 #include <kmtricks/cmd.hpp>
 #include <kmtricks/loop_executor.hpp>
@@ -17,6 +17,38 @@
 
 #include "muset_pa_cli.h"
 
+
+void init_logger(const fs::path &dir) {
+    auto cerr_sink = std::make_shared<spdlog::sinks::stderr_color_sink_mt>();
+    cerr_sink->set_pattern("[%Y-%m-%d %H:%M:%S] [%^%l%$] %v");
+
+    auto now = std::chrono::system_clock::now();
+    auto local_time = std::chrono::system_clock::to_time_t(now);
+    std::stringstream ss; ss << std::put_time(std::localtime(&local_time), "%Y%m%d_%H%M%S");
+    auto muset_log = fmt::format("{}/muset_pa_{}.log", dir.c_str(), ss.str());
+    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(muset_log, true);
+    file_sink->set_pattern("[%Y-%m-%d %H:%M:%S] [%^%l%$] %v");
+
+    auto combined_logger = std::make_shared<spdlog::logger>("muset", spdlog::sinks_init_list({cerr_sink,file_sink}));
+    spdlog::set_default_logger(combined_logger);
+}
+
+void print_options(muset::muset_pa_options_t opt) {
+
+    spdlog::info(fmt::format("input file (--file): {}", (opt->fof).c_str()));
+    spdlog::info(fmt::format("output directory (-o): {}", (opt->out_dir).c_str()));
+    
+    spdlog::info(fmt::format("k-mer size (-k): {}", opt->kmer_size));
+    spdlog::info(fmt::format("minimum abundance (-a): {}", opt->min_abundance));
+    spdlog::info(fmt::format("minimum unitig length (-l): {}", opt->min_utg_len));
+    spdlog::info(fmt::format("minimum unitig fraction set: {}", opt->min_utg_frac_set));
+    if(opt->min_utg_frac_set) { spdlog::info(fmt::format("minimum unitig fraction (-r): {}", opt->min_utg_frac)); }
+    spdlog::info(fmt::format("write unitig sequence (-s): {}", opt->write_utg_seq));
+    spdlog::info(fmt::format("minimizer size (-m): {}", opt->mini_size));
+
+    spdlog::info(fmt::format("keep temporary files (--keep-temp): {}", opt->keep_tmp));
+    spdlog::info(fmt::format("threads (-t): {}", opt->nb_threads));
+}
 
 void ggcat_build(muset::muset_pa_options_t opt) {
     std::string ggcat_tempdir = opt->out_dir/"ggcat_build";
@@ -109,11 +141,7 @@ void kmat_convert(muset::muset_pa_options_t opt) {
 int main(int argc, char* argv[])
 {
     muset::musetPaCli cli("muset_pa", "a pipeline for building a presence-absence unitig matrix from a list of FASTA/FASTQ files.", PROJECT_VER, "");
-
-    // spdlog::set_level(spdlog::level::debug);
-    auto cerr_logger = spdlog::stderr_color_mt("muset");
-    cerr_logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] %v");
-    spdlog::set_default_logger(cerr_logger);
+    auto opt = cli.parse(argc, argv);
 
     try
     {
@@ -122,7 +150,7 @@ int main(int argc, char* argv[])
             throw std::runtime_error("ggcat: command not found");
         }
 
-        auto opt = cli.parse(argc, argv);
+        // check parameters consistency
         opt->sanity_check();
         
         // minimum unitig length is set to 2k-1 if no threshold provided
@@ -131,6 +159,9 @@ int main(int argc, char* argv[])
         }
 
         fs::create_directories(opt->out_dir);
+
+        // initialize the logger just before running the pipeline
+        init_logger(opt->out_dir);
 
         spdlog::info(fmt::format("Building unitigs"));
         opt->unitigs = opt->out_dir/"unitigs";

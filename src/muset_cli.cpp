@@ -55,7 +55,7 @@ muset_options_t muset_cli(std::shared_ptr<bc::Parser<0>> cli, muset_options_t op
         ->def("")
         ->setter(options->in_matrix);
 
-    cli->add_param("-o/--output", "output directory.")
+    cli->add_param("-o/--out-dir", "output directory.")
         ->meta("DIR")
         ->def("output")
         ->setter(options->out_dir);

@@ -43,6 +43,10 @@ struct muset_pa_options
 
     void sanity_check()
     {
+        if(fof.empty()) {
+            throw std::runtime_error("--file is mandatory.\n\nFor more information try --help");
+        }
+
         if (mini_size >= kmer_size) {
             throw std::runtime_error("minimizer size must be smaller than k-mer size");
         }
