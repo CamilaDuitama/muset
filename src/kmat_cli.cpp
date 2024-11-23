@@ -1,9 +1,13 @@
-#include <kmat_tools/cli.h>
 #include <filesystem>
 
 #include <fmt/format.h>
+#include <spdlog/spdlog.h>
+
+#include <kmat_tools/cli.h>
 
 namespace fs = std::filesystem;
+
+
 namespace kmat {
 
 kmatCli::kmatCli(
@@ -39,12 +43,12 @@ std::tuple<COMMAND, kmat_opt_t> kmatCli::parse(int argc, char* argv[])
     if (argc > 1 && (std::string(argv[1]) == "--help" || std::string(argv[1]) == "-h"))
     {
         cli->show_help();
-        exit(EXIT_FAILURE);
+        std::exit(EXIT_FAILURE);
     }
     else if (argc > 1 && (std::string(argv[1]) == "--version" || std::string(argv[1]) == "-v"))
     {
         fmt::print("kmat_tools {}\n", MUSET_PROJECT_VER);
-        exit(EXIT_FAILURE);
+        std::exit(EXIT_FAILURE);
     }
 
     try
@@ -53,8 +57,10 @@ std::tuple<COMMAND, kmat_opt_t> kmatCli::parse(int argc, char* argv[])
     }
     catch (const bc::ex::BCliError& e)
     {
-        bc::utils::exit_bcli(e);
-        exit(EXIT_FAILURE);
+        if(!e.get_name().empty()) {
+            spdlog::error(fmt::format("[{}] {}\n\nFor more information try --help", e.get_name(), e.get_msg()));
+        }
+        std::exit(EXIT_FAILURE);
     }
 
     if (cli->is("convert")) {

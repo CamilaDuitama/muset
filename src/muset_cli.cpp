@@ -1,6 +1,9 @@
 #include <filesystem>
-#include <kmtricks/utils.hpp>
+
 #include <fmt/format.h>
+#include <spdlog/spdlog.h>
+
+#include <kmtricks/utils.hpp>
 
 #include "muset_cli.h"
 
@@ -16,17 +19,19 @@ musetCli::musetCli(const std::string& name, const std::string& desc, const std::
 
 muset_options_t musetCli::parse(int argc, char* argv[])
 {
-  try
-  {
-    (*cli).parse(argc, argv);
-  }
-  catch (const bc::ex::BCliError& e)
-  {
-    bc::utils::exit_bcli(e);
-    exit(EXIT_FAILURE);
-  }
+    try
+    {
+        (*cli).parse(argc, argv);
+    }
+    catch (const bc::ex::BCliError& e)
+    {
+        if (!e.get_name().empty()) {
+            spdlog::error(fmt::format("[{}] {}\n\nFor more information try --help", e.get_name(), e.get_msg()));
+        }
+        std::exit(EXIT_FAILURE);
+    }
 
-  return muset_opt;
+    return muset_opt;
 }
 
 

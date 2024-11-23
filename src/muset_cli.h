@@ -65,11 +65,11 @@ struct muset_options
 
 
     void sanity_check() {
-        // check input-file parameters
+        // check mandatory options
         if (in_matrix.empty() && fof.empty()) {
-            throw std::runtime_error("either --file or --in-matrix should be provided");
+            throw std::runtime_error("either --file or --in-matrix should be provided.\n\nFor more information try --help");
         } else if (!in_matrix.empty() && !fof.empty()) {
-            throw std::runtime_error("either --file or --in-matrix should be provided, but not both");
+            throw std::runtime_error("either --file or --in-matrix should be provided, but not both.\n\nFor more information try --help");
         }
 
         // check existance of the provided input file
