@@ -55,7 +55,7 @@ muset_options_t muset_cli(std::shared_ptr<bc::Parser<0>> cli, muset_options_t op
        ->def("")
        ->setter(options->fof);
 
-    cli->add_param("-i/--in-matrix", "input text matrix.")
+    cli->add_param("-i/--in-matrix", "input matrix (text file or kmtricks directory).")
         ->meta("FILE")
         ->def("")
         ->setter(options->in_matrix);
@@ -70,6 +70,12 @@ muset_options_t muset_cli(std::shared_ptr<bc::Parser<0>> cli, muset_options_t op
         ->def("31")
         ->checker(bc::check::f::range(8, 63))
         ->setter(options->kmer_size);
+
+    cli->add_param("-m/--mini-size", "minimizer size. [4, 15].")
+        ->meta("INT")
+        ->def("15")
+        ->checker(bc::check::f::range(4, 15))
+        ->setter(options->mini_size);
 
     cli->add_param("-a/--min-abundance", "minimum abundance to keep a k-mer.")
         ->meta("INT")
@@ -100,12 +106,6 @@ muset_options_t muset_cli(std::shared_ptr<bc::Parser<0>> cli, muset_options_t op
     cli->add_param("-u/--logan", "input samples consist of Logan unitigs (i.e., with abundance).")
         ->as_flag()
         ->setter(options->logan);
-
-    cli->add_param("-m/--mini-size", "minimizer size. [4, 15].")
-        ->meta("INT")
-        ->def("15")
-        ->checker(bc::check::f::range(4, 15))
-        ->setter(options->mini_size);
 
     /*** FILTERING OPTIONS ***/
     

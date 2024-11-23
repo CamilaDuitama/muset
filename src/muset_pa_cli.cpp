@@ -67,6 +67,12 @@ muset_pa_options_t muset_pa_cli(muset_pa_cli_t cli, muset_pa_options_t options) 
         ->checker(bc::check::f::range(8, 63))
         ->setter(options->kmer_size);
 
+    cli->add_param("-m/--mini-size", "minimizer size. [4, 15].")
+        ->meta("INT")
+        ->def("15")
+        ->checker(bc::check::f::range(4, 15))
+        ->setter(options->mini_size);
+
     cli->add_param("-a/--min-abundance", "minimum abundance required to keep a kmer.")
         ->meta("INT")
         ->def("2")
@@ -89,12 +95,6 @@ muset_pa_options_t muset_pa_cli(muset_pa_cli_t cli, muset_pa_options_t options) 
     cli->add_param("-s/--write-seq", "write the unitig sequence instead of the identifier in the output matrix")
         ->as_flag()
         ->setter(options->write_utg_seq);
-
-    cli->add_param("-m/--mini-size", "minimizer size. [4, 15].")
-        ->meta("INT")
-        ->def("15")
-        ->checker(bc::check::f::range(4, 15))
-        ->setter(options->mini_size);
 
     /*** OTHER OPTIONS ***/
 
