@@ -26,7 +26,7 @@ for generating a presence-absence unitig matrix.
 
 ### Conda installation
 
-The simplest way to install `muset` is by creating a conda environment (e.g., `muset_env`) as follows:
+The simplest way to install `muset` (and its dependencies) is by creating a conda environment (e.g., `muset_env`) as follows:
 ```
 conda create -n muset_env -c conda-forge bioconda::ggcat camiladuitama::muset
 ```
@@ -39,7 +39,7 @@ conda activate muset_env
 You can check if `muset` is correctly installed as follows:
 ```
 cd test
-muset fof.txt
+muset --file fof.txt
 ```
 
 ### Build from source
@@ -59,11 +59,11 @@ To build the tool:
 cd muset
 mkdir build && cd build
 cmake ..
-make
+make -j4
 ```
-Executables will be made available in the `bin` sub-directory relative to the root folder of the repository.
+Executables will be made available in the `bin` sub-directory of the main repository.
 
-To make the `muset` command available, remember to include the absolute path of MUSET's executables in your PATH environment variable, e.g., adding the following line to your `~/.bashrc` file:
+To make the `muset` command available, you might want to include the absolute path of the `bin` directory in your `PATH` environment variable, e.g., adding the following line to your `~/.bashrc` file:
 ```
 export PATH=/absolute/path/to/muset/bin:${PATH}
 ```
@@ -71,7 +71,7 @@ export PATH=/absolute/path/to/muset/bin:${PATH}
 You can check if `muset` is correctly installed as follows:
 ```
 cd test
-muset fof.txt
+muset --file fof.txt
 ```
 
 ### Build a Singularity image
@@ -89,50 +89,55 @@ sudo singularity build muset.sif Singularity.def
 
 To run `muset` and see the help message, use the following command:
 ```
-singularity exec /path/to/muset.sif muset -h
+singularity exec /path/to/muset.sif muset --help
 ```
 
 To try `muset` with example data, `cd` to the `test` directory within the repository, then run:
 ```
-singularity exec /path/to/muset.sif muset fof.txt
+singularity exec /path/to/muset.sif muset --file fof.txt
 ```
 
 ## Usage
 
 ````
-muset v0.4.1
+muset v0.5
 
-DESCRIPTION:
-   muset - a pipeline for building an abundance unitig matrix from a list of FASTA/FASTQ files.
+DESCRIPTION
+  a pipeline for building an abundance unitig matrix from a list of FASTA/FASTQ files.
 
-USAGE:
-   muset [options] INPUT_FILE
+USAGE
+  muset [--file <FILE>] [-i/--in-matrix <FILE>] [-o/--out-dir <DIR>] [-k/--kmer-size <INT>] 
+        [-m/--mini-size <INT>] [-a/--min-abundance <INT>] [-l/--min-unitig-length <INT>] 
+        [-r/--min-utg-frac <FLOAT>] [-f/--min-frac-absent <FLOAT>] 
+        [-F/--min-frac-present <FLOAT>] [-n/--min-nb-absent <FLOAT>] 
+        [-N/--min-nb-present <FLOAT>] [-t/--threads <INT>] [-s/--write-seq] [--out-frac] 
+        [-u/--logan] [--keep-temp] [-h/--help] [-v/--version] 
 
-OPTIONS:
-   -i PATH    skip matrix construction and run the pipeline with a previosuly computed matrix
-   -k INT     k-mer size (default: 31)
-   -a INT     min abundance to keep a k-mer (default: 2)
-   -l INT     minimum size of the unitigs to be retained in the final matrix (default: 2k-1)
-   -o PATH    output directory (default: output)
-   -m INT     minimizer length  (default: 15)
-   -n INT     minimum number of samples from which a k-mer should be absent (mutually exclusive with -f)
-   -f FLOAT   fraction of samples from which a k-mer should be absent (default: 0.1, mutually exclusive with -n)
-   -N INT     minimum number of samples in which a k-mer should be present (mutually exclusive with -F)
-   -F FLOAT   fraction of samples in which a k-mer should be present (default: 0.1, mutually exclusive with -N)
-   -t INT     number of cores (default: 4)
-   -s         write the unitig sequence in the first column of the output matrix instead of the identifier
-   -u         input is a list of unitigs from Logan (i.e., with abundance information)
-   -h         show this help message and exit
-   -V         show version number and exit
+OPTIONS
+  [main options]
+       --file              - kmtricks-like input file, see README.md. 
+    -i --in-matrix         - input matrix (text file or kmtricks directory). 
+    -o --out-dir           - output directory. {output}
+    -k --kmer-size         - k-mer size. [8, 63]. {31}
+    -m --mini-size         - minimizer size. [4, 15]. {15}
+    -a --min-abundance     - minimum abundance to keep a k-mer. {2}
+    -l --min-unitig-length - minimum unitig length. {2k-1}
+    -r --min-utg-frac      - minimum k-mer fraction to set unitig average abundance [0,1]. {0.0}
+    -s --write-seq         - write the unitig sequence instead of the identifier in the output matrix [⚑]
+       --out-frac          - output an additional matrix containing k-mer fractions. [⚑]
+    -u --logan             - input samples consist of Logan unitigs (i.e., with abundance). [⚑]
 
-POSITIONAL ARGUMENTS:
-    INPUT_FILE   Input file (fof) containing the description of input samples.
-                 It is ignored if -i option is used.
+  [filtering options]
+    -f --min-frac-absent  - fraction of samples from which a k-mer should be absent. [0.0, 1.0] {0.1}
+    -F --min-frac-present - fraction of samples in which a k-mer should be present. [0.0, 1.0] {0.1}
+    -n --min-nb-absent    - minimum number of samples from which a k-mer should be absent (overrides -f). {0}
+    -N --min-nb-present   - minimum number of samples in which a k-mer should be present (overrides -F). {0}
 
-NOTES:
-   Options -n and -f are mutually exclusive, as well as options -N and -F.
-   When either -n or -f is used, -N or -F must also be provided, and vice versa.
-   If none of the -n, -N, -f, -F options are used the last two options are used with their default values.
+  [other options]
+       --keep-temp - keep temporary files. [⚑]
+    -t --threads   - number of threads. {4}
+    -h --help      - show this message and exit. [⚑]
+    -v --version   - show version and exit. [⚑]
 ````
 
 ### Input data
@@ -158,39 +163,40 @@ ls -1 folder/*  | sort -n -t/ -k2 | xargs -L1 readlink -f | awk '{ print ++count
 
 Then simply run:
 ```
-muset fof.txt
+muset --file fof.txt
 ```
 
 ### I already have a k-mer matrix
-If you are familiar with `kmtricks` and/or have already produced a k-mer matrix on your own, you can run `muset` with the `-i` option and provide your own input matrix (and skip the possibly long matrix construction).
-
-Make sure to provide a matrix in text format. You can easily output one from a kmtricks run using the command `kmtricks aggregate` with parameters `--matrix kmer --format text`.
-By default, `kmtricks` will write it on stdout, so you might want to set the `--output` parameter.
-Ex: `kmtricks aggregate --matrix kmer --format text --cpr-in --sorted --output sorted_matrix.txt --run-dir kmtricks_output_dir`
+If you are familiar with [kmtricks](https://github.com/tlemane/kmtricks) and/or have already produced a k-mer matrix on your own, you can run `muset` with the `-i` option and provide your own input matrix (and skip the possibly long matrix construction).
+This k-mer matrix can be either a text file (with values separated by a single space) or a [kmtricks](https://github.com/tlemane/kmtricks) output directory.
 
 The pipeline can be then run as follows:
 ```
-muset -i sorted_matrix.txt <input_fof.txt>
+muset -i /path/to/input/matrix
 ```
 ### Output data
 
-The output data of `muset` is a folder with intermediate results and a `unitigs.mat` file, which is an abundance unitig matrix. Each row corresponds to a unitig and each column to a sample. Each entry of the matrix indicates the average abundance and fraction of the unitig k-mers belonging to the sample (separated by a semicolon) Ex:
+The output of `muset` is a folder with intermediate results and a `unitigs.abundance.mat` file, which is an abundance unitig matrix. Each row corresponds to a unitig and each column to a sample. Each entry of the matrix indicates the average abundance of the unitig k-mers within the corresponding sample Ex:
 
 | Unitig ID | Sample 1 | Sample 2 | Sample 3      | Sample 4      | Sample 5      |
-|-----|----------|----------|---------------|---------------|---------------|
-| 0   | 0.00;0.00| 0.00;0.00| 0.00;0.00     | 0.00;0.00     | 2.00;1.00     |
-| 1   | 2.00;1.00| 2.00;1.00| 2.00;1.00     | 2.00;1.00     | 0.00;0.00     |
-| 2   | 0.00;0.00| 0.00;0.00| 0.00;0.00     | 0.00;0.00     | 2.00;1.00     |
-| 3   | 0.00;0.00| 0.00;0.00| 0.00;0.00     | 0.00;0.00     | 2.00;1.00     |
-| 4   | 2.00;1.00| 2.00;1.00| 2.00;1.00     | 2.00;1.00     | 0.00;0.00     |
+|-----------|----------|----------|---------------|---------------|---------------|
+| 0         | 0.00     | 0.00     | 0.00          | 0.00          | 2.00          |
+| 1         | 2.00     | 2.00     | 2.00          | 2.00          | 0.00          |
+| 2         | 0.00     | 0.00     | 0.00          | 0.00          | 2.00          |
+| 3         | 0.00     | 0.00     | 0.00          | 0.00          | 2.00          |
+| 4         | 2.00     | 2.00     | 2.00          | 2.00          | 0.00          |
 
-**Note:** If instead of the unitig identifier you prefer to have the unitig sequence, run `muset` with the flag `-s`
+**Note:** 
+The sequence of a unitig can be retrieved from the FASTA file `unitigs.fa` stored in the output folder.
+If, instead, you prefer to directly have the unitig sequence in the first column, you can run `muset` using the `-s` flag.
 
 The average abundance of a unitig $u$ with respect to a sample $S$ (number on the left of the semicolon) is defined as:
 
 $$ A(u, S) = \frac{\sum\limits_{i=1}^{N}{c_i}}{N} $$
 
 where $N$ is the number of k-mers in $u$, and $c_i$ is the abundance of the $i$-th k-mer of $u$ in sample $S$.
+
+An companion matrix `unitigs.frac.mat`, containing the fraction of the unitig's k-mers belonging to a sample, can be outputted using the `--out-frac` parameter. Moreover the `--min-utg-frac` option allows to output the abundance value in the `unitigs.abundance.mat` file only for a unitig whose fraction is greater than a given threshold (otherwise abundance is set to `0.0`).
 
 The fraction of k-mers in a unitig $u$ that are present in a sample $S$ (number on the right of the semicolon) is defined as:
 
@@ -204,86 +210,86 @@ where $N$ is the number of k-mers in $u$, and $x_i$ is a binary variable that is
 MUSET includes a `kmat_tools`, an auxiliary executable allowing to perform some basic operations on a (text) k-mer matrix.
 
 ```
-kmat_tools v0.4.1
+kmat_tools v0.5
 
 DESCRIPTION
-  kmat_tools - a collection of tools to process text-based k-mer matrices
+  a collection of tools to process text-based k-mer matrices
 
 USAGE
-  kmat_tools <command> <arguments>
+  kmat_tools [convert|diff|fafmt|fasta|filter|merge|reverse|unitig]
 
 COMMANDS
-  convert  - convert ggcat jsonl color output into a csv unitig matrix
-  diff     - difference between two sorted k-mer matrices
-  fasta    - output a k-mer matrix in FASTA format
-  fafmt    - filter a FASTA file by length and write sequences in single lines
-  filter   - filter a text k-mer matrix by selecting k-mers that are potentially differential
-  merge    - merge two input sorted k-mer matrices
-  reverse  - reverse complement k-mers in a matrix
-  select   - select only a subset of k-mers
-  unitig   - build a unitig matrix
-  version  - print version
+  convert - Convert ggcat jsonl color output into a unitig matrix
+  diff    - Difference between two sorted k-mer matrices
+  fafmt   - Filter a FASTA file by length and write sequences in single lines
+  fasta   - Output a k-mer matrix in FASTA format
+  filter  - Filter a matrix by selecting k-mers that are potentially differential.
+  merge   - Merge two input text-based kmer-sorted matrices.
+  reverse - Reverse-complement k-mers in a k-mer matrix file.
+  unitig  - Create a unitig matrix.
 ```
 
 ### I just want a presence-absence unitig matrix
-MUSET also includes `muset_pa`, an auxiliary executable for building a presence-absence unitig matrix in text format from a list of input samples using `ggcat` and `kmat_tools`.
+MUSET also includes `muset_pa`, an executable for building a presence-absence unitig matrix in text format from a list of input samples using `ggcat` and `kmat_tools`.
 
 ```
-muset_pa v0.4.1
+muset_pa v0.5
 
-DESCRIPTION:
-   muset_pa - a pipeline for building a presence-absence unitig matrix from a list of FASTA/FASTQ files.
-              this pipeline has fewer parameters than muset and less filtering options as it does not build
-              nor use an intermediate k-mer abundance matrix.
-              If you wish a 0/1 binary matrix instead of the fraction of kmers from the sample present in the
-              unitig, please use the option -r and a value x, 0 < x <=1 as minimum treshold to count a sample
-              as present (1).
+DESCRIPTION
+  a pipeline for building a presence-absence unitig matrix from a list of FASTA/FASTQ files.
 
-USAGE:
-   muset_pa [options] INPUT_FILE
+USAGE
+  muset_pa [--file <FILE>] [-o/--out-dir <DIR>] [-k/--kmer-size <INT>] [-m/--mini-size <INT>] 
+           [-a/--min-abundance <INT>] [-l/--min-unitig-length <INT>] 
+           [-r/--min-utg-frac <FLOAT>] [-t/--threads <INT>] [-s/--write-seq] [-h/--help] 
+           [-v/--version] 
 
-OPTIONS:
-   -k INT     k-mer size (default: 31)
-   -a INT     min abundance to keep a k-mer (default: 2)
-   -l INT     minimum size of the unitigs to be retained in the final matrix (default: 2k-1)
-   -r FLOAT   minimum kmer presence ratio in the unitig for 1/0 
-   -o PATH    output directory (default: output)
-   -m INT     minimizer length  (default: 15)
-   -t INT     number of cores (default: 4)
-   -s         write the unitig sequence in the first column of the output matrix instead of the identifier
-   -h         show this help message and exit
-   -V         show version number and exit
+OPTIONS
+  [main options]
+       --file              - list of FASTA/Q files, one per line (see README.md). 
+    -o --out-dir           - output directory. {output_pa}
+    -k --kmer-size         - k-mer size. [8, 63]. {31}
+    -m --mini-size         - minimizer size. [4, 15]. {15}
+    -a --min-abundance     - minimum abundance required to keep a kmer. {2}
+    -l --min-unitig-length - minimum length required to keep a unitig. {2k-1}
+    -r --min-utg-frac      - output a binary matrix; sets a unitig as present (1) when fraction is greater than this threshold [0,1]. {0.8}
+    -s --write-seq         - write the unitig sequence instead of the identifier in the output matrix [⚑]
 
-POSITIONAL ARGUMENTS:
-    INPUT_FILE   Input file (fof) containing paths of input samples (one per line).
+  [other options]
+    -t --threads - number of threads. {4}
+    -h --help    - show this message and exit. [⚑]
+    -v --version - show version and exit. [⚑]
 ```
 
 #### Input file
-The input is a file containing a list of paths (one per line), as required by the `-l` parameter of GGCAT.
-Make sure to either specify absolute paths or paths relative to the directory from which you intend to run `muset_pa`.
+The input is a file containing a list of paths (one per line), as required by the `-l` parameter of [GGCAT](https://github.com/algbio/ggcat). Make sure to either specify absolute paths or paths relative to the directory from which you intend to run `muset_pa`.
 
 A simple test example can be run from the `test` directory:
 ```
 cd test
-muset_pa -o output_pa fof_pa.txt
+muset_pa -o output_pa --file fof_pa.txt
 ```
 
 
 #### Output file
-The pipeline will produce multiple intermediate output files, among which the jsonl dictionary of the colors for each unitig that is normally produced by ggcat.
-The pipeline automatically converts it into a unitig matrix in csv format (separated by column). If you choose option -r you will have it in binary format (0/1) else it will report the
-percentage of k-mers from each samples inside the unitigs. Samples will have the name of the input files you used.
-Here an example  
-| Unitig ID | Sample 1 | Sample 2 | Sample 3      | Sample 4      | Sample 5      |
-|-----|-----|-----|-----|-----|-----|
-| 0   | 0   | 1   |0.23 | 0.3 |  1  |
-| 1   | 1   | 1   |  0  | 0.8 | 0.4 |
-| 2   | 0.47| 0.2 |  1  |  1  |  0  |
-| 3   | 0.8 | 1   |0.78 |  1  | 0.81|
-| 4   | 0.79| 1   |  1  | 0.87|0.89 |
 
-In case you use -r 0.8, you will have  
-| Unitig ID | Sample 1 | Sample 2 | Sample 3      | Sample 4      | Sample 5      |
+The pipeline will produce several intermediate output files, among which the jsonl dictionary of the colors for each unitig that is normally produced by ggcat. The pipeline automatically converts it into a unitig matrix in text format (with values separated by a single space).
+
+The default output is a unitig matrix whose values represent the fraction of the unitig's k-mers belonging to a sample. The `-r`/`--min-utg-frac` option allows to output a binary matrix which sets values to `1` when fraction is above the provided threshol and `0` otherwise.
+
+Here is an example:
+
+| Unitig ID | Sample 1 | Sample 2 | Sample 3 | Sample 4 | Sample 5 |
+|-----------|----------|----------|----------|----------|----------|
+| 0         | 0        | 1        | 0.23     | 0.3      | 1        |
+| 1         | 1        | 1        |   0      | 0.8      | 0.4      |
+| 2         | 0.47     | 0.2      |   1      |  1       | 0        |
+| 3         | 0.8      | 1        | 0.78     |  1       | 0.81     |
+| 4         | 0.79     | 1        |   1      | 0.87     | 0.89     |
+
+With option `-r 0.8`, you would have:
+
+| Unitig ID | Sample 1 | Sample 2 | Sample 3 | Sample 4 | Sample 5 |
 |-----|-----|-----|-----|-----|-----|
 | 0   |  0  |  1  |  0  |  0  |  1  |
 | 1   |  1  |  1  |  0  |  1  |  0  |
