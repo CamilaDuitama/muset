@@ -196,7 +196,7 @@ $$ A(u, S) = \frac{\sum\limits_{i=1}^{N}{c_i}}{N} $$
 
 where $N$ is the number of k-mers in $u$, and $c_i$ is the abundance of the $i$-th k-mer of $u$ in sample $S$.
 
-A companion matrix `unitigs.frac.mat`, containing the fraction of the unitig's k-mers belonging to a sample, can be outputted using the `--out-frac` parameter. Moreover the `--min-utg-frac` option allows to output the abundance value in the `unitigs.abundance.mat` file only for a unitig whose fraction is greater than a given threshold (otherwise abundance is set to `0.0`).
+A companion matrix `unitigs.frac.mat`, containing the fraction of the unitig's k-mers belonging to a sample, can be outputted using the `--out-frac` parameter. Moreover the `--min-utg-frac` option allows to output the abundance value in the `unitigs.abundance.mat` file only for a unitig whose fraction is greater or equal than a given threshold (otherwise abundance is set to `0.0`).
 
 The fraction of k-mers in a unitig $u$ that are present in a sample $S$ (number on the right of the semicolon) is defined as:
 
@@ -275,7 +275,7 @@ muset_pa -o output_pa --file fof_pa.txt
 
 The pipeline will produce several intermediate output files, among which the jsonl dictionary of the colors for each unitig that is normally produced by ggcat. The pipeline automatically converts it into a unitig matrix in text format (with values separated by a single space).
 
-The default output is a unitig matrix whose values represent the fraction of the unitig's k-mers belonging to a sample. The `-r`/`--min-utg-frac` option allows to output a binary matrix which sets values to `1` when fraction is above the provided threshol and `0` otherwise.
+The default output is a unitig matrix whose values represent the fraction of the unitig's k-mers belonging to a sample. The `-r`/`--min-utg-frac` option allows to output a binary matrix with values set to `1` when unitig's k-mer fraction is greater or equal than the provided threshold, and `0` otherwise.
 
 Here is an example:
 
