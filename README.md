@@ -196,7 +196,7 @@ $$ A(u, S) = \frac{\sum\limits_{i=1}^{N}{c_i}}{N} $$
 
 where $N$ is the number of k-mers in $u$, and $c_i$ is the abundance of the $i$-th k-mer of $u$ in sample $S$.
 
-An companion matrix `unitigs.frac.mat`, containing the fraction of the unitig's k-mers belonging to a sample, can be outputted using the `--out-frac` parameter. Moreover the `--min-utg-frac` option allows to output the abundance value in the `unitigs.abundance.mat` file only for a unitig whose fraction is greater than a given threshold (otherwise abundance is set to `0.0`).
+A companion matrix `unitigs.frac.mat`, containing the fraction of the unitig's k-mers belonging to a sample, can be outputted using the `--out-frac` parameter. Moreover the `--min-utg-frac` option allows to output the abundance value in the `unitigs.abundance.mat` file only for a unitig whose fraction is greater than a given threshold (otherwise abundance is set to `0.0`).
 
 The fraction of k-mers in a unitig $u$ that are present in a sample $S$ (number on the right of the semicolon) is defined as:
 
