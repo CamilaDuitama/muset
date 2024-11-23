@@ -121,7 +121,7 @@ int main_convert(convert_opt_t opt)
                         curr_value = value.get<float>();
                         if (index < presence_values.size()) {
                             if (opt->ap_flag) {
-                                presence_values[index] = (curr_value > opt->min_frac);
+                                presence_values[index] = (curr_value > 0 && curr_value >= opt->min_frac);
                             } else {
                                 presence_values[index] = curr_value;
                             }
