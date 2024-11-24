@@ -46,7 +46,7 @@ muset --file fof.txt
 Requirements:
   - a recent version of GCC (or clang) that supports the C++17 standard
   - cmake >= 3.15
-  - [GGCAT](https://github.com/algbio/ggcat?tab=readme-ov-file#installation)
+  - [GGCAT](https://github.com/algbio/ggcat?tab=readme-ov-file#install)
 
 To clone the repository:
 ```
