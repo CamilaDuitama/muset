@@ -1,4 +1,4 @@
-{% set version = "0.4.2" %}
+{% set version = "0.5" %}
 
 package:
   name: muset
@@ -20,7 +20,7 @@ requirements:
     - zlib
 
   run:
-    - bioconda::kmtricks >=1.4.0
+    - bioconda::ggcat >=1.1.0
     - zlib
 
 about:
@@ -45,7 +45,7 @@ extra:
 ##     - test/D7.fastq
 ##     - test/D8.fastq
 ##     - test/D9.fastq
-##     - test/D10.fastq 
-## 
+##     - test/D10.fastq
+##
 ##   commands:
 ##     - cd test && muset fof.txt

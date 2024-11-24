@@ -1,0 +1,6 @@
+#pragma once
+
+#define MUSET_PROJECT_VER  "v@PROJECT_VERSION@"
+#define MUSET_KMER_LIST @KMER_LIST@
+#define MUSET_KMER_LIST_STR "@KMER_LIST@"
+#define MUSET_KMER_N @KMER_N@
