@@ -42,7 +42,6 @@ From: ubuntu:22.04
 
 %test
     echo "Checking commands..."
-    command -v kmtricks
     command -v ggcat
     command -v kmat_tools
     command -v muset
