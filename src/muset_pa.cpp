@@ -54,7 +54,7 @@ void ggcat_build(muset::muset_pa_options_t opt) {
     std::string ggcat_tempdir = opt->out_dir/"ggcat_build";
     std::string ggcat_keeptmp = opt->keep_tmp ? "--keep-temp-files" : "";
     std::string ggcat_logfile = opt->out_dir/"ggcat_build.log";
-    std::string ggcat_cmd = fmt::format("ggcat build -k {} -s {} --minimizer-length {} --colors -j {} -l {} -o {} {} --temp-dir {} &> {}",
+    std::string ggcat_cmd = fmt::format("ggcat build -k {} -s {} --minimizer-length {} --colors -j {} -l {} -o {} {} --temp-dir {} >{} 2>&1",
         opt->kmer_size, // -k
         opt->min_abundance, // -s
         opt->mini_size, // --minimizer-length
@@ -75,7 +75,7 @@ void ggcat_build(muset::muset_pa_options_t opt) {
 void ggcat_dump_colors(muset::muset_pa_options_t opt) {
     std::string colormap = fmt::format("{}.colors.dat", (opt->unitigs).c_str());
     std::string ggcat_logfile = opt->out_dir/"ggcat_dump-colors.log";
-    std::string ggcat_cmd = fmt::format("ggcat dump-colors {} {} &> {}",
+    std::string ggcat_cmd = fmt::format("ggcat dump-colors {} {} >{} 2>&1",
         colormap, (opt->colors_json).c_str(), ggcat_logfile);
 
     spdlog::debug(fmt::format("Running command: {}", ggcat_cmd));    
@@ -89,7 +89,7 @@ void ggcat_query(muset::muset_pa_options_t opt) {
     std::string ggcat_tempdir = opt->out_dir/"ggcat_query";
     std::string ggcat_keeptmp = opt->keep_tmp ? "--keep-temp-files" : "";
     std::string ggcat_logfile = opt->out_dir/"ggcat_query.log";
-    std::string ggcat_cmd = fmt::format("ggcat query --colors -k {} --minimizer-length {} -j {} -o {} {} --temp-dir {} {} {} &> {}",
+    std::string ggcat_cmd = fmt::format("ggcat query --colors -k {} --minimizer-length {} -j {} -o {} {} --temp-dir {} {} {} >{} 2>&1",
         opt->kmer_size, // -k
         opt->mini_size, // --minimizer-length
         opt->nb_threads, // -j
@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
     try
     {
         // check ggcat dependency
-        if (std::system("ggcat --version &>/dev/null") != 0) {
+        if (std::system("ggcat --version >/dev/null 2>&1") != 0) {
             throw std::runtime_error("ggcat: command not found");
         }
 
