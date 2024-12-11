@@ -139,7 +139,7 @@ void ggcat(muset::muset_options_t muset_opt) {
     std::string ggcat_keeptmp = muset_opt->keep_tmp ? "--keep-temp-files" : "";
     std::string ggcat_tempdir = muset_opt->out_dir/"ggcat_build_temp";
     std::string ggcat_logfile = muset_opt->out_dir/"ggcat.log";
-    std::string ggcat_cmd = fmt::format("ggcat build -j {} -k {} -s 1 -o {} {} --temp-dir {} {} &> {}",
+    std::string ggcat_cmd = fmt::format("ggcat build -j {} -k {} -s 1 -o {} {} --temp-dir {} {} >{} 2>&1",
         muset_opt->nb_threads, muset_opt->kmer_size,
         (muset_opt->unitigs).c_str(),
         ggcat_keeptmp, // --keep-temp-files ?
@@ -147,7 +147,7 @@ void ggcat(muset::muset_options_t muset_opt) {
         (muset_opt->filtered_kmers).c_str(),
         ggcat_logfile);
 
-    spdlog::debug(fmt::format("Running command: {}", ggcat_cmd));    
+    spdlog::debug(fmt::format("Running command: {}", ggcat_cmd));
     auto ret = std::system(ggcat_cmd.c_str());
     if(ret != 0) {
         throw std::runtime_error(fmt::format("Command failed: {}\nSee log at {}", ggcat_cmd, ggcat_logfile));
@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
     try
     {
         // check ggcat dependency
-        if (std::system("ggcat --version &>/dev/null") != 0) {
+        if (std::system("ggcat --version >/dev/null 2>&1") != 0) {
             throw std::runtime_error("ggcat: command not found");
         }
 
