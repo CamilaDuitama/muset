@@ -76,7 +76,7 @@ muset --file fof.txt
 ### Build a Singularity image
 
 Requirements:
-  - Singularity installed on your system. Refer to the [Singularity Installation Guide](https://sylabs.io/guides/3.0/user-guide/installation.html) for detailed instructions.
+  - Singularity is installed on your system. Please refer to the [Singularity Installation Guide](https://sylabs.io/guides/3.0/user-guide/installation.html) for detailed instructions.
 
 
 To build a singularity image (e.g., `muset.sif`):
@@ -146,7 +146,7 @@ OPTIONS
 If you do not have a k-mer matrix ready, make sure to create a "fof" file, that is a file which contains one line per sample with the following syntax:
   - `<Sample ID> : <1.fastq.gz> ; ... ; <N.fastq.gz>`
 
-Files could be in either FASTA or FASTQ format, gzipped or not.
+Files can be in either FASTA or FASTQ format, and may be gzipped or not.
 Multiple files per sample can be provided by separating them with a semicolon.
 
 <ins>Example:</ins>
@@ -160,22 +160,22 @@ You can generate such an input file from a folder containing many input files as
 ls -1 folder/*  | sort -n -t/ -k2 | xargs -L1 readlink -f | awk '{ print ++count" : "$1 }' >fof.txt
 ```
 
-Then simply run:
+Then run:
 ```
 muset --file fof.txt
 ```
 
 ### I already have a k-mer matrix
-If you are familiar with [kmtricks](https://github.com/tlemane/kmtricks) and/or have already produced a k-mer matrix on your own, you can run `muset` with the `-i` option and provide your own input matrix (and skip the possibly long matrix construction).
+If you are familiar with [kmtricks](https://github.com/tlemane/kmtricks) and/or have already produced a k-mer matrix on your own, you can run `muset` with the `-i` option and provide your input matrix (and skip the possibly long matrix construction).
 This k-mer matrix can be either a text file (with values separated by a single space) or a [kmtricks](https://github.com/tlemane/kmtricks) output directory.
 
-The pipeline can be then run as follows:
+The pipeline can then be run as follows:
 ```
 muset -i /path/to/input/matrix
 ```
 ### Output data
 
-The output of `muset` is a folder with intermediate results and a `unitigs.abundance.mat` file, which is an abundance unitig matrix. Each row corresponds to a unitig and each column to a sample. Each entry of the matrix indicates the average abundance of the unitig k-mers within the corresponding sample Ex:
+The output of `muset` is a folder containing intermediate results and a `unitigs.abundance.mat` file, which is an abundance matrix of unitigs. Each row corresponds to a unitig and each column to a sample. Each entry of the matrix indicates the average abundance of the unitig k-mers within the corresponding sample Ex:
 
 | Unitig ID | Sample 1 | Sample 2 | Sample 3      | Sample 4      | Sample 5      |
 |-----------|----------|----------|---------------|---------------|---------------|
@@ -187,9 +187,9 @@ The output of `muset` is a folder with intermediate results and a `unitigs.abund
 
 **Note:** 
 The sequence of a unitig can be retrieved from the FASTA file `unitigs.fa` stored in the output folder.
-If, instead, you prefer to directly have the unitig sequence in the first column, you can run `muset` using the `-s` flag.
+If, instead, you prefer to have the unitig sequence in the first column directly, you can run `muset` using the `-s` flag.
 
-The average abundance of a unitig $u$ with respect to a sample $S$ (number on the left of the semicolon) is defined as:
+The average abundance of a unitig $u$ with respect to a sample $S$ is defined as:
 
 $$ A(u, S) = \frac{\sum\limits_{i=1}^{N}{c_i}}{N} $$
 
@@ -206,7 +206,7 @@ where $N$ is the number of k-mers in $u$, and $x_i$ is a binary variable that is
 
 ### K-mer matrix operations
 
-MUSET includes a `kmat_tools`, an auxiliary executable allowing to perform some basic operations on a (text) k-mer matrix.
+MUSET includes a `kmat_tools`, an auxiliary executable that lets you perform some basic operations on a (text) k-mer matrix.
 
 ```
 kmat_tools v0.5
