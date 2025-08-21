@@ -7,7 +7,7 @@ MUSET is a software for generating an abundance unitig matrix from a collection 
 It additionally provides a comprehensive suite of tools (called `kmat tools`) for manipulating k-mer matrices and a script for generating a presence-absence unitig matrix.
 
 + [Installation](#installation)
-  - [Conda installation](#conda-installation)
+  - [Mamba installation](#mamba-installation)
   - [Build from source](#build-from-source)
   - [Build a Singularity image](#build-a-singularity-image)
 + [Usage](#usage)
@@ -23,16 +23,16 @@ It additionally provides a comprehensive suite of tools (called `kmat tools`) fo
 
 ## Installation
 
-### Conda installation
+### Mamba installation
 
-The simplest way to install `muset` (and its dependencies) is by creating a conda environment (e.g., `muset_env`) as follows:
+The simplest way to install `muset` (and its dependencies) is by creating a mamba environment (e.g., `muset_env`) as follows:
 ```
-conda create -n muset_env -c conda-forge bioconda::ggcat camiladuitama::muset
+mamba create -n muset_env -c conda-forge -c bioconda -c camiladuitama muset ggcat=2.0.0
 ```
 
-To run `muset` remember to activate the corresponding conda environment with:
+To run `muset` remember to activate the corresponding mamba environment with:
 ```
-conda activate muset_env
+mamba activate muset_env
 ```
 
 You can check if `muset` is correctly installed as follows:
