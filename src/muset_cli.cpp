@@ -103,13 +103,13 @@ muset_options_t muset_cli(std::shared_ptr<bc::Parser<0>> cli, muset_options_t op
         ->as_flag()
         ->setter(options->write_frac_matrix);
 
-    cli->add_param("--abundance-metric", "metric to use for abundance: mean or median.")
+    cli->add_param("--abundance-metric", "metric to use for abundance: [mean,median]. {mean}")
         ->meta("STRING")
         ->def("mean") // Default to mean for backward compatibility
         ->checker(bc::check::f::in("mean|median"))
         ->setter(options->abundance_metric);
 
-    cli->add_param("--output-format", "Output format can be either 'txt' or 'tsv' (tsv is gzip compressed).")
+    cli->add_param("--output-format", "output format can be either [txt, tsv.gz]. {txt}")
         ->meta("STRING")
         ->def("txt") // Default to txt for backward compatibility
         ->checker(bc::check::f::in("txt|tsv"))

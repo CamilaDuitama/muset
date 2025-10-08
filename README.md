@@ -105,17 +105,17 @@ DESCRIPTION
   a pipeline for building an abundance unitig matrix from a list of FASTA/FASTQ files.
 
 USAGE
-  muset [--file <FILE>] [-i/--in-matrix <FILE>] [-o/--out-dir <DIR>] [-k/--kmer-size <INT>] 
-        [-m/--mini-size <INT>] [-a/--min-abundance <INT>] [-l/--min-unitig-length <INT>] 
-        [-r/--min-utg-frac <FLOAT>] [-f/--min-frac-absent <FLOAT>] 
-        [-F/--min-frac-present <FLOAT>] [-n/--min-nb-absent <FLOAT>] 
-        [-N/--min-nb-present <FLOAT>] [-t/--threads <INT>] [-s/--write-seq] [--out-frac] 
-        [-u/--logan] [--keep-temp] [-h/--help] [-v/--version] 
+  muset [--file <FILE>] [-i/--in-matrix <FILE>] [-o/--out-dir <DIR>] [-k/--kmer-size <INT>]
+        [-m/--mini-size <INT>] [-a/--min-abundance <INT>] [-l/--min-unitig-length <INT>]
+        [-r/--min-utg-frac <FLOAT>] [-f/--min-frac-absent <FLOAT>]
+        [-F/--min-frac-present <FLOAT>] [-n/--min-nb-absent <FLOAT>]
+        [-N/--min-nb-present <FLOAT>] [-t/--threads <INT>] [-s/--write-seq] [--out-frac]
+        [-u/--logan] [--keep-temp] [-h/--help] [-v/--version]
 
 OPTIONS
   [main options]
-       --file              - kmtricks-like input file, see README.md. 
-    -i --in-matrix         - input matrix (text file or kmtricks directory). 
+       --file              - kmtricks-like input file, see README.md.
+    -i --in-matrix         - input matrix (text file or kmtricks directory).
     -o --out-dir           - output directory. {output}
     -k --kmer-size         - k-mer size. [8, 63]. {31}
     -m --mini-size         - minimizer size. [4, 15]. {15}
@@ -124,7 +124,10 @@ OPTIONS
     -r --min-utg-frac      - minimum k-mer fraction to set unitig average abundance [0,1]. {0.0}
     -s --write-seq         - write the unitig sequence instead of the identifier in the output matrix [⚑]
        --out-frac          - output an additional matrix containing k-mer fractions. [⚑]
+       --abundance-metric  - metric to use for abundance: [mean,median]. {mean}
+       --output-format     - output format can be either [txt, tsv.gz]. {txt}
     -u --logan             - input samples consist of Logan unitigs (i.e., with abundance). [⚑]
+    -e --generate-maximal-unitigs-links - ggcat generates maximal unitigs connections references, in BCALM2 format L:<+/->:<other id>:<+/-> [⚑]
 
   [filtering options]
     -f --min-frac-absent  - fraction of samples from which a k-mer should be absent. [0.0, 1.0] {0.1}
@@ -185,7 +188,7 @@ The output of `muset` is a folder containing intermediate results and a `unitigs
 | 3         | 0.00     | 0.00     | 0.00          | 0.00          | 2.00          |
 | 4         | 2.00     | 2.00     | 2.00          | 2.00          | 0.00          |
 
-**Note:** 
+**Note:**
 The sequence of a unitig can be retrieved from the FASTA file `unitigs.fa` stored in the output folder.
 If, instead, you prefer to have the unitig sequence in the first column directly, you can run `muset` using the `-s` flag.
 
@@ -238,14 +241,14 @@ DESCRIPTION
   a pipeline for building a presence-absence unitig matrix from a list of FASTA/FASTQ files.
 
 USAGE
-  muset_pa [--file <FILE>] [-o/--out-dir <DIR>] [-k/--kmer-size <INT>] [-m/--mini-size <INT>] 
-           [-a/--min-abundance <INT>] [-l/--min-unitig-length <INT>] 
-           [-r/--min-utg-frac <FLOAT>] [-t/--threads <INT>] [-s/--write-seq] [-h/--help] 
-           [-v/--version] 
+  muset_pa [--file <FILE>] [-o/--out-dir <DIR>] [-k/--kmer-size <INT>] [-m/--mini-size <INT>]
+           [-a/--min-abundance <INT>] [-l/--min-unitig-length <INT>]
+           [-r/--min-utg-frac <FLOAT>] [-t/--threads <INT>] [-s/--write-seq] [-h/--help]
+           [-v/--version]
 
 OPTIONS
   [main options]
-       --file              - list of FASTA/Q files, one per line (see README.md). 
+       --file              - list of FASTA/Q files, one per line (see README.md).
     -o --out-dir           - output directory. {output_pa}
     -k --kmer-size         - k-mer size. [8, 63]. {31}
     -m --mini-size         - minimizer size. [4, 15]. {15}
