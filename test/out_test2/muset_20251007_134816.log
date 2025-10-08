@@ -1,0 +1,37 @@
+[2025-10-07 13:48:16] [info] Running muset v0.5.1
+[2025-10-07 13:48:16] [info] ---------------
+[2025-10-07 13:48:16] [info] input file (--file): fof.txt
+[2025-10-07 13:48:16] [info] output directory (-o): out_test2
+[2025-10-07 13:48:16] [info] k-mer size (-k): 32
+[2025-10-07 13:48:16] [info] minimum abundance (-a): 1
+[2025-10-07 13:48:16] [info] minimum unitig length (-l): 8
+[2025-10-07 13:48:16] [info] minimum unitig fraction (-r): 0
+[2025-10-07 13:48:16] [info] write unitig sequence (-s): false
+[2025-10-07 13:48:16] [info] output unitig fraction matrix (--out-frac): false
+[2025-10-07 13:48:16] [info] input consists of logan unitigs (--logan): false
+[2025-10-07 13:48:16] [info] minimizer size (-m): 12
+[2025-10-07 13:48:16] [info] number of absent samples (-n): 0
+[2025-10-07 13:48:16] [info] number of present samples (-N): 0
+[2025-10-07 13:48:16] [info] keep temporary files (--keep-temp): false
+[2025-10-07 13:48:16] [info] threads (-t): 8
+[2025-10-07 13:48:16] [info] ---------------
+[2025-10-07 13:48:16] [info] Building k-mer matrix with kmtricks
+[2025-10-07 13:48:16] [info] Run with Kmer<64> - __uint128_t implementation
+[2025-10-07 13:48:16] [info] Compute configuration...
+[2025-10-07 13:48:16] [info] 10 samples found (20 read files).
+[2025-10-07 13:48:16] [info] Use 4 partitions.
+[2025-10-07 13:48:16] [info] Compute minimizer repartition...
+[2025-10-07 13:48:17] [info] Filtering k-mer matrix
+[2025-10-07 13:48:17] [info] filtering kmtricks matrix: out_test2/kmer_matrix
+[2025-10-07 13:48:17] [info] 5077/5077 kmers retained
+[2025-10-07 13:48:17] [info] Writing k-mers in FASTA format
+[2025-10-07 13:48:17] [info] 5077 k-mers processed
+[2025-10-07 13:48:17] [info] Building unitigs
+[2025-10-07 13:48:17] [info] Running command: ggcat build -j 8 -k 32 --generate-maximal-unitigs-links -s 1 -o out_test2/unitigs  --temp-dir out_test2/ggcat_build_temp out_test2/matrix.filtered.fasta >out_test2/ggcat.log 2>&1
+[2025-10-07 13:48:18] [info] Filtering unitigs
+[2025-10-07 13:48:18] [info] 20/20 sequences retained
+[2025-10-07 13:48:18] [info] Building unitig matrix
+[2025-10-07 13:48:18] [info] building k-mer dictionary
+[2025-10-07 13:48:18] [info] aggregating k-mer counts
+[2025-10-07 13:48:18] [info] Computing mean (mean) for unitigs.
+[2025-10-07 13:48:18] [info] writing unitig matrix

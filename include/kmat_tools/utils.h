@@ -120,7 +120,7 @@ static size_t get_nb_samples(const std::string_view line, bool skip_first = fals
   size_t nb_samples{0};
   size_t idx = line.find_first_not_of(" \t");
 
-  if (skip_first && idx != std::string_view::npos) { 
+  if (skip_first && idx != std::string_view::npos) {
     idx = line.find_first_of(" \t", idx);
     idx = line.find_first_not_of(" \t", idx);
   }

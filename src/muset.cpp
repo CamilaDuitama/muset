@@ -45,7 +45,7 @@ void print_options(muset::muset_options_t opt) {
     if(!(opt->fof).empty()) { spdlog::info(fmt::format("input file (--file): {}", (opt->fof).c_str())); }
     if(!(opt->in_matrix).empty()) { spdlog::info(fmt::format("input matrix (-i): {}", (opt->in_matrix).c_str())); }
     spdlog::info(fmt::format("output directory (-o): {}", (opt->out_dir).c_str()));
-    
+
     spdlog::info(fmt::format("k-mer size (-k): {}", opt->kmer_size));
     spdlog::info(fmt::format("minimum abundance (-a): {}", opt->min_abundance));
     spdlog::info(fmt::format("minimum unitig length (-l): {}", opt->min_utg_len));
@@ -71,7 +71,7 @@ void print_options(muset::muset_options_t opt) {
 }
 
 void kmtricks_pipeline(muset::muset_options_t muset_opt) {
-    
+
     // set kmtricks pipeline options
     auto kmtricks_opt = std::make_shared<km::all_options>();
     kmtricks_opt->fof = muset_opt->fof; // --file
@@ -82,7 +82,7 @@ void kmtricks_pipeline(muset::muset_options_t muset_opt) {
     kmtricks_opt->r_min = muset_opt->min_nb_absent; // --recurrence-min
     kmtricks_opt->logan = muset_opt->logan; // --logan
     kmtricks_opt->nb_threads = muset_opt->nb_threads; // --treads
-    
+
     // other kmtricks options that might need to be set manually
     kmtricks_opt->count_format = km::COUNT_FORMAT::KMER; // --mode
     kmtricks_opt->mode = km::MODE::COUNT;
@@ -105,9 +105,9 @@ void kmat_filter(muset::muset_options_t muset_opt) {
     auto filter_opt = std::make_shared<kmat::filter_options>();
 
     filter_opt->output = muset_opt->filtered_matrix;
-    
+
     filter_opt->min_abundance = muset_opt->min_abundance;
-    
+
     filter_opt->min_frac_absent = muset_opt->min_frac_absent;
     filter_opt->min_frac_present = muset_opt->min_frac_present;
     filter_opt->min_nb_absent_set = muset_opt->min_nb_absent_set;
@@ -118,7 +118,7 @@ void kmat_filter(muset::muset_options_t muset_opt) {
     filter_opt->keep_tmp = muset_opt->keep_tmp;
     filter_opt->lz4 = muset_opt->lz4;
     filter_opt->kmer_size = muset_opt->kmer_size; // not actually needed
-    
+
     filter_opt->nb_threads = muset_opt->nb_threads;
 
     (filter_opt->inputs).push_back(muset_opt->kmer_matrix);
@@ -139,14 +139,25 @@ void ggcat(muset::muset_options_t muset_opt) {
     std::string ggcat_keeptmp = muset_opt->keep_tmp ? "--keep-temp-files" : "";
     std::string ggcat_tempdir = muset_opt->out_dir/"ggcat_build_temp";
     std::string ggcat_logfile = muset_opt->out_dir/"ggcat.log";
-    std::string ggcat_cmd = fmt::format("ggcat build -j {} -k {} -s 1 -o {} {} --temp-dir {} {} >{} 2>&1",
+    std::string ggcat_cmd;
+    if (muset_opt->unitig_edges){ // adding -e for edges
+        ggcat_cmd = fmt::format("ggcat build -j {} -k {} --generate-maximal-unitigs-links -s 1 -o {} {} --temp-dir {} {} >{} 2>&1",
         muset_opt->nb_threads, muset_opt->kmer_size,
         (muset_opt->unitigs).c_str(),
         ggcat_keeptmp, // --keep-temp-files ?
         ggcat_tempdir, // --temp-dir
         (muset_opt->filtered_kmers).c_str(),
         ggcat_logfile);
-
+    } else{
+        ggcat_cmd = fmt::format("ggcat build -j {} -k {} -s 1 -o {} {} --temp-dir {} {} >{} 2>&1",
+        muset_opt->nb_threads, muset_opt->kmer_size,
+        (muset_opt->unitigs).c_str(),
+        ggcat_keeptmp, // --keep-temp-files ?
+        ggcat_tempdir, // --temp-dir
+        (muset_opt->filtered_kmers).c_str(),
+        ggcat_logfile);
+    }
+    spdlog::info(fmt::format("Running command: {}", ggcat_cmd));
     spdlog::debug(fmt::format("Running command: {}", ggcat_cmd));
     auto ret = std::system(ggcat_cmd.c_str());
     if(ret != 0) {
@@ -175,6 +186,8 @@ void kmat_unitig(muset::muset_options_t muset_opt) {
     unitig_opt->write_seq = muset_opt->write_utg_seq;
     unitig_opt->write_frac_matrix = muset_opt->write_frac_matrix;
     unitig_opt->nb_threads = muset_opt->nb_threads;
+    unitig_opt->output_format = muset_opt->output_format;
+    unitig_opt->abundance_metric = muset_opt->abundance_metric;
 
     (unitig_opt->inputs).push_back(muset_opt->filtered_unitigs);
     (unitig_opt->inputs).push_back(muset_opt->filtered_matrix);
@@ -196,7 +209,7 @@ int main(int argc, char* argv[])
 
         // check parameters consistency
         muset_opt->sanity_check();
-        
+
         if (!muset_opt->min_utg_len_set) {
             muset_opt->min_utg_len = 2 * muset_opt->kmer_size - 1;
         }

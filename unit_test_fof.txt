@@ -1,0 +1,2 @@
+test2 : /home/fandreac/Develop/muset/unit_tests/test_data/test2.fa
+test1 : /home/fandreac/Develop/muset/unit_tests/test_data/test1.fa

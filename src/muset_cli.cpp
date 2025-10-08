@@ -103,12 +103,28 @@ muset_options_t muset_cli(std::shared_ptr<bc::Parser<0>> cli, muset_options_t op
         ->as_flag()
         ->setter(options->write_frac_matrix);
 
+    cli->add_param("--abundance-metric", "metric to use for abundance: mean or median.")
+        ->meta("STRING")
+        ->def("mean") // Default to mean for backward compatibility
+        ->checker(bc::check::f::in("mean|median"))
+        ->setter(options->abundance_metric);
+
+    cli->add_param("--output-format", "Output format can be either 'txt' or 'tsv' (tsv is gzip compressed).")
+        ->meta("STRING")
+        ->def("txt") // Default to txt for backward compatibility
+        ->checker(bc::check::f::in("txt|tsv"))
+        ->setter(options->output_format);
+
     cli->add_param("-u/--logan", "input samples consist of Logan unitigs (i.e., with abundance).")
         ->as_flag()
         ->setter(options->logan);
 
+    cli->add_param("-e/--generate-maximal-unitigs-links", "ggcat generates maximal unitigs connections references, in BCALM2 format L:<+/->:<other id>:<+/->")
+        ->as_flag()
+        ->setter(options->unitig_edges);
+
     /*** FILTERING OPTIONS ***/
-    
+
     cli->add_group("filtering options", "");
 
    //  cli->add_param("--no-kmer-filter", "disable filtering of k-mer matrix rows before unitig construction.")
@@ -158,11 +174,11 @@ muset_options_t muset_cli(std::shared_ptr<bc::Parser<0>> cli, muset_options_t op
     cli->add_param("-h/--help", "show this message and exit.")
         ->as_flag()
         ->action(bc::Action::ShowHelp);
-    
+
     cli->add_param("-v/--version", "show version and exit.")
         ->as_flag()
         ->action(bc::Action::ShowVersion);
-    
+
     // cli->add_param("--verbose", "verbosity level [debug|info|warning|error].")
     //    ->meta("STR")
     //    ->def("info")

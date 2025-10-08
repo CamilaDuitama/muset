@@ -1,0 +1,35 @@
+reading file 'out_test2/unitigs.fa'...
+m_buffer_size 29411764
+sorting buffer...
+saving to file './sshash.tmp.run_1759837698686817177.minimizers.0.bin'...
+read 20 sequences, 5697 bases, 5077 kmers
+num_kmers 5077
+num_super_kmers 613
+num_pieces 21 (+0.256451 [bits/kmer])
+=== step 1: 'parse_file' 0.001197 [sec] (235.769 [ns/kmer])
+=== step 2: 'build_minimizers' 0.000607 [sec] (119.559 [ns/kmer])
+bits_per_offset = ceil(log2(5729)) = 13
+m_buffer_size 20833333
+sorting buffer...
+saving to file './sshash.tmp.run_1759837698688638439.bucket_pairs.0.bin'...
+num_singletons 500/553 (90.4159%)
+=== step 3: 'build_index' 0.000115 [sec] (22.6512 [ns/kmer])
+max_num_super_kmers_in_bucket 5
+log2_max_num_super_kmers_in_bucket 3
+num_buckets_in_skew_index 0/553 (0%)
+=== step 4: 'build_skew_index' 1.3e-05 [sec] (2.56057 [ns/kmer])
+=== total_time 0.001932 [sec] (380.54 [ns/kmer])
+total index size: 3842 [B] -- 0.003842 [MB]
+SPACE BREAKDOWN:
+  minimizers: 1.0778 [bits/kmer]
+  pieces: 0.283632 [bits/kmer]
+  num_super_kmers_before_bucket: 0.397085 [bits/kmer]
+  offsets: 1.63876 [bits/kmer]
+  strings: 2.29427 [bits/kmer]
+  skew_index: 0.0378176 [bits/kmer]
+  weights: 0.289935 [bits/kmer]
+    weight_interval_values: 0.0504235 [bits/kmer]
+    weight_interval_lengths: 0.189088 [bits/kmer]
+    weight_dictionary: 0.0504235 [bits/kmer]
+  --------------
+  total: 6.05397 [bits/kmer]

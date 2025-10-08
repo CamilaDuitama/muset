@@ -15,8 +15,10 @@ struct unitig_options : kmat_options {
 
     uint32_t kmer_size{31};
     uint32_t mini_size{15};
-    
+
     std::string prefix;
+    std::string abundance_metric;
+    std::string output_format;
 
     double min_frac{0.0};
     bool write_seq{false};

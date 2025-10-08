@@ -1,0 +1,42 @@
+#!/bin/bash
+
+directory=$1
+output_fof=$2
+
+echo -e "DIRECTORY: $directory\tOUTPUT FILE: $output_fof"
+# Check if the directory argument is provided
+if [[ -z "\$1" || -z "\$2" ]]; then
+  echo "Usage: \$0 /path/to/your/directory /path/to/fof"
+  exit 1
+fi
+
+# getting absolute directory
+directory=$(cd "$directory" && pwd)
+
+# dictionary of files
+declare -A file_dict
+echo -e "HERE"
+# looping around possible fastqs. If they share the same prefix before the '_', they get to the same sample bin.
+for file in "$directory"/*.{fasta,fa,fastq,fq}{,.gz,.bz2,.xz,.zst};  {
+  if [[ -e $file ]]; then
+    filename=$(basename "$file")
+    base_name="${filename%%.*}"
+    base_name_cut="${base_name%%_*}"
+    if [[ -z "${file_dict[$base_name]}" ]] then
+      # initialization in case first file for a sample
+      file_dict[$base_name]="$base_name : $file"
+      # echo "INITIALIZATION: ${file_dict[$base_name]}"
+    else
+      # adding other files for the same sample
+      # echo "UPDATE BEFORE: ${file_dict[$base_name]}"
+      file_dict[$base_name]="${file_dict[$base_name]} ; $file"
+      # echo "UPDATE AFTER:  ${file_dict[$base_name]}"
+    fi
+  fi
+}
+echo -e "THERE"
+#printout of the fof
+for sample in ${!file_dict[@]}; {
+  echo "${file_dict[$sample]}" >>$output_fof
+}
+echo -e "FINAL"

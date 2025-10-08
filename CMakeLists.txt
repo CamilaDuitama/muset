@@ -56,7 +56,7 @@ message(STATUS "  Host System Version: ${CMAKE_HOST_SYSTEM_VERSION}")
 ############################################################
 ## Compiler flags
 
-set(CMAKE_CXX_FLAGS_DEBUG "-g")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -pthread")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-ignored-qualifiers -Wno-char-subscripts -Wno-maybe-uninitialized -Wno-unused-function -pedantic")
 
@@ -149,6 +149,19 @@ set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
 list(APPEND deps_libs Threads::Threads)
 
+################################################
+## TESTING ##
+enable_testing()
+
+# Downloading and building GoogleTest
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest
+  GIT_TAG v1.17.0
+)
+FetchContent_MakeAvailable(googletest)
+
 ############################################################
 ## config.hpp file
 
@@ -220,3 +233,18 @@ target_compile_definitions(muset_pa PRIVATE DMAX_C=${MAX_C})
 target_include_directories(muset_pa PRIVATE ${includes})
 target_link_libraries(muset_pa ${deps_libs})
 add_dependencies(muset_pa ${deps})
+
+#############################################################
+# Test executable
+add_executable(aggregator_tests
+  unit_tests/aggregator.cpp
+)
+target_include_directories(aggregator_tests PRIVATE
+  ${includes}
+  # other paths?
+)
+target_link_libraries(aggregator_tests PRIVATE
+  GTest::gtest_main
+  ${deps_libs}
+)
+add_test(NAME aggregator_tests COMMAND aggregator_tests)

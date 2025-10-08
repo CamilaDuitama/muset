@@ -38,7 +38,7 @@ struct muset_options
     double min_utg_frac{0.0};
     bool write_utg_seq{false};
     bool write_frac_matrix{false};
-    
+
     bool no_kmer_filter{false};
     double min_frac_absent{0.1};
     double min_frac_present{0.1};
@@ -46,12 +46,15 @@ struct muset_options
     int min_nb_absent{0};
     bool min_nb_present_set{false};
     int min_nb_present{0};
-    
+
     bool keep_tmp{false};
     bool lz4{true};
     bool logan{false};
+    bool unitig_edges{false};
 
     int nb_threads{1};
+
+    fs::path abundance_metric;
 
     // intermediate (temporary) files, defined along the pipeline
 
@@ -62,6 +65,7 @@ struct muset_options
     // part of the output
     fs::path filtered_unitigs;
     fs::path unitig_prefix;
+    fs::path output_format;
 
 
     void sanity_check() {
@@ -79,7 +83,7 @@ struct muset_options
         // if (!in_matrix.empty() && (!fs::is_regular_file(in_matrix) || fs::is_empty(in_matrix))) {
         //     throw std::runtime_error(fmt::format("input matrix \"{}\" is not a file or is empty", in_matrix.c_str()));
         // }
-        
+
         // --logan flag only valid for kmer-size equal to 31
         if ((logan) && (kmer_size != 31)) {
             throw std::runtime_error("--logan available only for --kmer-size equal to 31");
