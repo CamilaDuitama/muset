@@ -15,7 +15,7 @@ directory=$(cd "$directory" && pwd)
 
 # dictionary of files
 declare -A file_dict
-echo -e "HERE"
+
 # looping around possible fastqs. If they share the same prefix before the '_', they get to the same sample bin.
 for file in "$directory"/*.{fasta,fa,fastq,fq}{,.gz,.bz2,.xz,.zst};  {
   if [[ -e $file ]]; then
@@ -34,9 +34,8 @@ for file in "$directory"/*.{fasta,fa,fastq,fq}{,.gz,.bz2,.xz,.zst};  {
     fi
   fi
 }
-echo -e "THERE"
+
 #printout of the fof
 for sample in ${!file_dict[@]}; {
   echo "${file_dict[$sample]}" >>$output_fof
 }
-echo -e "FINAL"
