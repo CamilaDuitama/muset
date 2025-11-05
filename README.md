@@ -99,7 +99,7 @@ singularity exec /path/to/muset.sif muset --file fof.txt
 ## Usage
 
 ````
-muset v0.5
+muset v0.6.0
 
 DESCRIPTION
   a pipeline for building an abundance unitig matrix from a list of FASTA/FASTQ files.
@@ -212,7 +212,7 @@ where $N$ is the number of k-mers in $u$, and $x_i$ is a binary variable that is
 MUSET includes a `kmat_tools`, an auxiliary executable that lets you perform some basic operations on a (text) k-mer matrix.
 
 ```
-kmat_tools v0.5
+kmat_tools v0.6.0
 
 DESCRIPTION
   a collection of tools to process text-based k-mer matrices
@@ -235,7 +235,7 @@ COMMANDS
 MUSET also includes `muset_pa`, an executable for building a presence-absence unitig matrix in text format from a list of input samples using `ggcat` and `kmat_tools`.
 
 ```
-muset_pa v0.5
+muset_pa v0.6.0
 
 DESCRIPTION
   a pipeline for building a presence-absence unitig matrix from a list of FASTA/FASTQ files.
