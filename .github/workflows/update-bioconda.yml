@@ -70,10 +70,9 @@ jobs:
             --repo bioconda/bioconda-recipes \
             --head "${{ github.repository_owner }}:${BRANCH}" \
             --title "Update muset to ${VERSION}" \
-            --body "This PR updates \`muset\` to version ${VERSION}.
+            --body "This PR updates muset to version ${VERSION}.
 
-## Changes
-See release notes: https://github.com/${{ github.repository }}/releases/tag/v${VERSION}
+**Changes:** See release notes at https://github.com/${{ github.repository }}/releases/tag/v${VERSION}
 
 ---
 *This PR was automatically created by GitHub Actions.*"
