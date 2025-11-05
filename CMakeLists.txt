@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(muset VERSION 0.5.1 LANGUAGES C CXX)
+project(muset VERSION 0.6.0 LANGUAGES C CXX)
 
 ############################################################
 ## kmtricks compile-time parameters
