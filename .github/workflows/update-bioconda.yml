@@ -1,0 +1,91 @@
+name: Update Bioconda Recipe
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  update-bioconda:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout muset repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get version from tag
+        id: get_version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Checkout bioconda-recipes fork
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/bioconda-recipes
+          path: bioconda-recipes
+          token: ${{ secrets.BIOCONDA_PAT }}
+
+      - name: Configure git
+        working-directory: bioconda-recipes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add upstream https://github.com/bioconda/bioconda-recipes.git
+          git fetch upstream
+          git merge upstream/master
+
+      - name: Create branch and update recipe
+        working-directory: bioconda-recipes
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          BRANCH="muset-${VERSION}"
+          
+          # Create new branch
+          git checkout -b $BRANCH
+          
+          # Update version in meta.yaml
+          sed -i "s/{% set version = \".*\" %}/{% set version = \"${VERSION}\" %}/" recipes/muset/meta.yaml
+          sed -i "s/  number: .*/  number: 0/" recipes/muset/meta.yaml
+          
+          # Commit changes
+          git add recipes/muset/meta.yaml
+          git commit -m "Update muset to ${VERSION}"
+          
+          # Push to fork
+          git push origin $BRANCH
+
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.BIOCONDA_PAT }}
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          BRANCH="muset-${VERSION}"
+          
+          cd bioconda-recipes
+          
+          gh pr create \
+            --repo bioconda/bioconda-recipes \
+            --head "${{ github.repository_owner }}:${BRANCH}" \
+            --title "Update muset to ${VERSION}" \
+            --body "This PR updates \`muset\` to version ${VERSION}.
+
+## Changes
+See release notes: https://github.com/${{ github.repository }}/releases/tag/v${VERSION}
+
+---
+*This PR was automatically created by GitHub Actions.*"
+
+      - name: Comment on release
+        if: github.event_name == 'release'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.release.id,
+              body: '🤖 Bioconda update PR has been created automatically! Check https://github.com/bioconda/bioconda-recipes/pulls'
+            })

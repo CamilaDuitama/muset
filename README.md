@@ -312,3 +312,15 @@ For building a k-mer matrix and unitigs the following two software are used:
 
 - [kmtricks](https://github.com/tlemane/kmtricks)
 - [GGCAT](https://github.com/algbio/ggcat)
+
+## For Maintainers
+
+### Updating Bioconda Package
+
+When releasing a new version, the Bioconda package is automatically updated via GitHub Actions when you publish a release. Alternatively, use the manual script:
+
+```bash
+./scripts/update_bioconda.sh
+```
+
+See `scripts/README.md` for more details on automation and manual updates.
