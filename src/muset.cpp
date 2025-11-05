@@ -105,10 +105,8 @@ void kmat_filter(muset::muset_options_t muset_opt) {
     auto filter_opt = std::make_shared<kmat::filter_options>();
 
     filter_opt->output = muset_opt->filtered_matrix;
-
-    filter_opt->min_abundance = muset_opt->min_abundance;
-
-    filter_opt->min_frac_absent = muset_opt->min_frac_absent;
+    
+    filter_opt->min_abundance = muset_opt->min_abundance;    filter_opt->min_frac_absent = muset_opt->min_frac_absent;
     filter_opt->min_frac_present = muset_opt->min_frac_present;
     filter_opt->min_nb_absent_set = muset_opt->min_nb_absent_set;
     filter_opt->min_nb_absent = muset_opt->min_nb_absent;

@@ -22,7 +22,36 @@ namespace fs = std::filesystem;
 
 namespace kmat {
 
+bool should_skip_filter(filter_opt_t opt) {
+    // Check if filtering would let everything through
+    bool no_absent_filter = (!opt->min_nb_absent_set && opt->min_frac_absent == 0.0)
+                         || (opt->min_nb_absent_set && opt->min_nb_absent == 0);
+    
+    bool no_present_filter = (!opt->min_nb_present_set && opt->min_frac_present == 0.0)
+                          || (opt->min_nb_present_set && opt->min_nb_present == 0);
+    
+    return (no_absent_filter && no_present_filter);
+}
+
 int kmat_basic_filter(fs::path input, filter_opt_t opt) {
+
+    // Optimization: if no filtering is needed, just copy the file
+    if (should_skip_filter(opt) && !(opt->output).empty()) {
+        spdlog::info(fmt::format("No filtering needed - copying matrix"));
+        std::ifstream src(input, std::ios::binary);
+        std::ofstream dst(opt->output, std::ios::binary);
+        dst << src.rdbuf();
+        
+        // Count lines for reporting
+        src.clear();
+        src.seekg(0);
+        size_t nb_kmers = 0;
+        std::string line;
+        while (std::getline(src, line)) { nb_kmers++; }
+        
+        spdlog::info(fmt::format("{}/{} k-mers retained (no filtering)", nb_kmers, nb_kmers));
+        return 0;
+    }
 
     TextMatrixReader reader(input);
 
@@ -97,21 +126,30 @@ struct kmtricks_matrix_filter {
             }
         }
 
-        std::size_t nb_threads = std::min(opts->nb_threads, matrix_paths.size());
-        km::TaskPool pool(nb_threads);
-        std::vector<std::size_t> nb_total_kmers(matrix_paths.size(),0);
-        std::vector<std::size_t> nb_retained(matrix_paths.size(),0);
-        for (std::size_t i=0; i < matrix_paths.size(); i++) {
-            pool.add_task(std::make_shared<FilterTask<MAX_K>>(matrix_paths[i], filtered_paths[i], nb_total_kmers[i], nb_retained[i], opts));
+        // Check if we can skip filtering
+        if (should_skip_filter(opts)) {
+            spdlog::info(fmt::format("No filtering needed - aggregating matrices"));
+            // Directly aggregate without filtering
+            km::MatrixFileAggregator<MAX_K,DMAX_C> mfa(matrix_paths, opts->kmer_size);
+            (opts->output).empty() ? mfa.write_as_text(std::cout) : mfa.write_as_text(opts->output);
+            spdlog::info(fmt::format("All k-mers retained (no filtering)"));
+        } else {
+            std::size_t nb_threads = std::min(opts->nb_threads, matrix_paths.size());
+            km::TaskPool pool(nb_threads);
+            std::vector<std::size_t> nb_total_kmers(matrix_paths.size(),0);
+            std::vector<std::size_t> nb_retained(matrix_paths.size(),0);
+            for (std::size_t i=0; i < matrix_paths.size(); i++) {
+                pool.add_task(std::make_shared<FilterTask<MAX_K>>(matrix_paths[i], filtered_paths[i], nb_total_kmers[i], nb_retained[i], opts));
+            }
+            pool.join_all();
+
+            km::MatrixFileAggregator<MAX_K,DMAX_C> mfa(filtered_paths, opts->kmer_size);
+            (opts->output).empty() ? mfa.write_as_text(std::cout) : mfa.write_as_text(opts->output);
+
+            auto retained_kmers = std::reduce(nb_retained.begin(), nb_retained.end());
+            auto total_kmers = std::reduce(nb_total_kmers.begin(), nb_total_kmers.end());
+            spdlog::info(fmt::format("{}/{} kmers retained", retained_kmers, total_kmers));
         }
-        pool.join_all();
-
-        km::MatrixFileAggregator<MAX_K,DMAX_C> mfa(filtered_paths, opts->kmer_size);
-        (opts->output).empty() ? mfa.write_as_text(std::cout) : mfa.write_as_text(opts->output);
-
-        auto retained_kmers = std::reduce(nb_retained.begin(), nb_retained.end());
-        auto total_kmers = std::reduce(nb_total_kmers.begin(), nb_total_kmers.end());
-        spdlog::info(fmt::format("{}/{} kmers retained", retained_kmers, total_kmers));
     }
 };
 
