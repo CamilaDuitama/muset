@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.6.0] - 2025-11-05
+## [0.6.0] - 2025-11-05 (Latest Release)
 
 ### Added
 - `--abundance-metric` option to choose between mean (default) or median for unitig abundance calculation
@@ -24,9 +24,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Performance
 - Filtering step now directly aggregates matrices when no actual filtering is needed, reducing I/O overhead
 
-## [0.5.1] - 2024-XX-XX
-- Previous release
+## [0.5.1] - 2024-12-11
+### Changed
+- Minor bug fixes and improvements
+
+---
+
+**Latest stable release:** [v0.6.0](https://github.com/CamilaDuitama/muset/releases/tag/v0.6.0)
 
 [Unreleased]: https://github.com/CamilaDuitama/muset/compare/v0.6.0...HEAD
-[0.6.0]: https://github.com/CamilaDuitama/muset/compare/v0.5.1...v0.6.0
+[0.6.0]: https://github.com/CamilaDuitama/muset/releases/tag/v0.6.0
 [0.5.1]: https://github.com/CamilaDuitama/muset/releases/tag/v0.5.1
