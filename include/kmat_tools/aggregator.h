@@ -145,16 +145,14 @@ class MedianAggregator: public Aggregator {
         int         m2 {};              // value at idx2
         bool        have_m1 = false;
 
-        // std::cout << "IDX1: " << idx1 << "; IDX2: " << idx2 << std::endl;
-        // for (auto const& [key, cnt] : sample_map)
-        // {
-        //   if (key <= 0)
-        //     continue;
-        //   std::cout << "key: " << key << ", running: " << running << ", count: " << cnt << std::endl;
-        //   running += cnt;
-        //   if (!have_m1 && running > idx1) { m1 = key; have_m1 = true; std::cout << "m1 is: " << key << ", ";}
-        //   if (running > idx2) { m2 = key; std::cout << "m2 is: " << key << std::endl; break; }
-        // }
+        for (auto const& [key, cnt] : sample_map)
+        {
+          if (key <= 0)
+            continue;
+          running += cnt;
+          if (!have_m1 && running > idx1) { m1 = key; have_m1 = true; }
+          if (running > idx2) { m2 = key; break; }
+        }
         abundance = (idx1 == idx2) ? static_cast<double>(m2) : (static_cast<double>(m1) + m2) / 2.0;
     }
 
