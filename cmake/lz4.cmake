@@ -1,7 +1,7 @@
 # lz4 library
 
-ExternalProject_Add(LZ4
-    PREFIX ${external_bindir}/LZ4
+ExternalProject_Add(lz4
+    PREFIX ${external_bindir}/lz4
     SOURCE_DIR ${external_dir}/lz4
     SOURCE_SUBDIR build/cmake
     CMAKE_ARGS -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=OFF
@@ -13,5 +13,5 @@ ExternalProject_Add(LZ4
 )
 
 list(APPEND includes ${external_dir}/lz4/lib)
-list(APPEND deps_libs ${external_bindir}/LZ4/src/LZ4-build/liblz4.a)
-list(APPEND deps LZ4)
+list(APPEND deps_libs ${external_bindir}/lz4/src/lz4-build/liblz4.a)
+list(APPEND deps lz4)
