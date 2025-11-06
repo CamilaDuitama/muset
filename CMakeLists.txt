@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(muset VERSION 0.6.0 LANGUAGES C CXX)
+project(muset VERSION 0.6.1 LANGUAGES C CXX)
 
 ############################################################
 ## kmtricks compile-time parameters
@@ -151,16 +151,18 @@ list(APPEND deps_libs Threads::Threads)
 
 ################################################
 ## TESTING ##
-enable_testing()
+if(BUILD_TESTING)
+  enable_testing()
 
-# Downloading and building GoogleTest
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  GIT_REPOSITORY https://github.com/google/googletest
-  GIT_TAG v1.17.0
-)
-FetchContent_MakeAvailable(googletest)
+  # Downloading and building GoogleTest
+  include(FetchContent)
+  FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest
+    GIT_TAG v1.17.0
+  )
+  FetchContent_MakeAvailable(googletest)
+endif()
 
 ############################################################
 ## config.hpp file
@@ -236,15 +238,17 @@ add_dependencies(muset_pa ${deps})
 
 #############################################################
 # Test executable
-add_executable(aggregator_tests
-  unit_tests/aggregator.cpp
-)
-target_include_directories(aggregator_tests PRIVATE
-  ${includes}
-  # other paths?
-)
-target_link_libraries(aggregator_tests PRIVATE
-  GTest::gtest_main
-  ${deps_libs}
-)
-add_test(NAME aggregator_tests COMMAND aggregator_tests)
+if(BUILD_TESTING)
+  add_executable(aggregator_tests
+    unit_tests/aggregator.cpp
+  )
+  target_include_directories(aggregator_tests PRIVATE
+    ${includes}
+    # other paths?
+  )
+  target_link_libraries(aggregator_tests PRIVATE
+    GTest::gtest_main
+    ${deps_libs}
+  )
+  add_test(NAME aggregator_tests COMMAND aggregator_tests)
+endif()
