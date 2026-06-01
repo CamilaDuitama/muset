@@ -99,18 +99,23 @@ singularity exec /path/to/muset.sif muset --file fof.txt
 ## Usage
 
 ````
-muset v0.6.0
+muset v0.6.1
 
 DESCRIPTION
   a pipeline for building an abundance unitig matrix from a list of FASTA/FASTQ files.
 
+NOTATION
+  {value} = default value; [min, max] = valid range; [⚑] = boolean flag (no value)
+
 USAGE
   muset [--file <FILE>] [-i/--in-matrix <FILE>] [-o/--out-dir <DIR>] [-k/--kmer-size <INT>]
         [-m/--mini-size <INT>] [-a/--min-abundance <INT>] [-l/--min-unitig-length <INT>]
-        [-r/--min-utg-frac <FLOAT>] [-f/--min-frac-absent <FLOAT>]
-        [-F/--min-frac-present <FLOAT>] [-n/--min-nb-absent <FLOAT>]
-        [-N/--min-nb-present <FLOAT>] [-t/--threads <INT>] [-s/--write-seq] [--out-frac]
-        [-u/--logan] [--keep-temp] [-h/--help] [-v/--version]
+        [-r/--min-utg-frac <FLOAT>] [-s/--write-seq] [--out-frac]
+        [--abundance-metric <STRING>] [--output-format <STRING>]
+        [-u/--logan] [-e/--generate-maximal-unitigs-links]
+        [-f/--min-frac-absent <FLOAT>] [-F/--min-frac-present <FLOAT>]
+        [-n/--min-nb-absent <FLOAT>] [-N/--min-nb-present <FLOAT>]
+        [-t/--threads <INT>] [--keep-temp] [-h/--help] [-v/--version]
 
 OPTIONS
   [main options]
@@ -176,6 +181,9 @@ The pipeline can then be run as follows:
 ```
 muset -i /path/to/input/matrix
 ```
+
+> **Note:** the k-mer filtering options (`-f`, `-F`, `-n`, `-N`) still apply when using `-i`. By default (`-f 0.1 -F 0.1`), only k-mers present in ≥10% and absent from ≥10% of samples are retained. To keep all k-mers from your input matrix, set `-f 0.0 -F 0.0`.
+
 ### Output data
 
 The output of `muset` is a folder containing intermediate results and a `unitigs.abundance.mat` file, which is an abundance matrix of unitigs. Each row corresponds to a unitig and each column to a sample. Each entry of the matrix indicates the average abundance of the unitig k-mers within the corresponding sample Ex:

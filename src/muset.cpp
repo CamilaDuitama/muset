@@ -195,7 +195,10 @@ void kmat_unitig(muset::muset_options_t muset_opt) {
 
 int main(int argc, char* argv[])
 {
-    muset::musetCli cli("muset", "a pipeline for building an abundance unitig matrix from a list of FASTA/FASTQ files.", PROJECT_VER, "");
+    muset::musetCli cli("muset",
+        "a pipeline for building an abundance unitig matrix from a list of FASTA/FASTQ files."
+        "\n\nNOTATION\n  {value} = default value; [min, max] = valid range; [\u2691] = boolean flag (no value)",
+        PROJECT_VER, "");
     auto muset_opt = cli.parse(argc, argv);
 
     try
